@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TokenScale · Built by the Numbers</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;700&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@700,800&display=swap');
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+[data-theme="light"] {
+  --bg:#f0ede8;--bg2:#e8e4de;--card:#faf8f5;--border:#d4cfc8;--border-hi:#b8b2aa;
+  --text:#1e1c18;--text-sub:#4a4640;--text-muted:#8a8278;--text-ghost:#b8b0a8;
+  --accent:#1967d2;--green:#0a7c4e;--amber:#a05a00;--red:#b83030;--num-bg:#f5f2ee;
+}
+[data-theme="dark"] {
+  --bg:#131210;--bg2:#1c1a17;--card:#1e1c18;--border:#2e2b26;--border-hi:#46423c;
+  --text:#f0ede8;--text-sub:#a09890;--text-muted:#635e58;--text-ghost:#45413c;
+  --accent:#4d8ef7;--green:#2aad78;--amber:#e8a020;--red:#e05050;--num-bg:#252220;
+}
+
+html { scroll-behavior: smooth; }
+body { background:var(--bg);color:var(--text);font-family:'Lora',Georgia,serif;line-height:1.7;transition:background 0.3s ease,color 0.3s ease;min-height:100vh; }
+
+.mode-toggle { position:fixed;top:1.2rem;right:1.2rem;z-index:200;width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border-hi);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;color:var(--text-sub);transition:border-color 0.2s,background 0.2s;-webkit-tap-highlight-color:transparent;box-shadow:0 2px 8px rgba(0,0,0,0.12); }
+.mode-toggle:hover { border-color:var(--accent); }
+.page { max-width:600px;margin:0 auto;padding:0 1.5rem 6rem; }
+.masthead { padding:3.5rem 0 2rem;border-bottom:2px solid var(--text);margin-bottom:2.5rem; }
+.masthead-kicker { font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem; }
+.masthead-kicker::before { content:'';display:inline-block;width:24px;height:1.5px;background:var(--accent); }
+.masthead-hed { font-family:'Clash Display',Georgia,sans-serif;font-weight:800;font-size:clamp(2.2rem,7vw,3.6rem);letter-spacing:-0.04em;line-height:1;color:var(--text);margin-bottom:0.75rem; }
+.masthead-hed em { font-style:normal;color:var(--accent); }
+.masthead-dek { font-size:1.05rem;font-weight:400;color:var(--text-sub);line-height:1.6;max-width:480px;margin-bottom:1.2rem; }
+.masthead-byline { font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);letter-spacing:0.06em;display:flex;align-items:center;gap:1rem; }
+.byline-dot { width:3px;height:3px;border-radius:50%;background:var(--text-ghost); }
+.section-rule { display:flex;align-items:center;gap:0.75rem;margin:2.5rem 0 1.2rem; }
+.section-rule-line { flex:1;height:1px;background:var(--border); }
+.section-rule-label { font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap; }
+.body-copy { font-size:1rem;color:var(--text-sub);line-height:1.8;margin-bottom:1.5rem; }
+.body-copy strong { color:var(--text);font-weight:600; }
+.body-copy em { font-style:italic;color:var(--text); }
+.pull-quote { margin:2rem 0;padding:1.2rem 1.4rem;border-left:3px solid var(--accent);background:var(--card);border-radius:0 10px 10px 0;box-shadow:0 2px 12px rgba(0,0,0,0.06); }
+.pull-quote-text { font-size:1.05rem;font-weight:600;font-style:italic;color:var(--text);line-height:1.65;margin-bottom:0.5rem; }
+.pull-quote-attr { font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);letter-spacing:0.06em; }
+.stat-cluster { display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin:1.2rem 0; }
+.stat-cluster.three { grid-template-columns:1fr 1fr 1fr; }
+.stat-tile { background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1rem 0.9rem;position:relative;overflow:hidden;transition:border-color 0.2s; }
+.stat-tile:hover { border-color:var(--border-hi); }
+.stat-tile-bar { position:absolute;top:0;left:0;right:0;height:3px;background:var(--tile-accent,var(--accent)); }
+.stat-tile.g { --tile-accent:var(--green); }
+.stat-tile.a { --tile-accent:var(--amber); }
+.stat-tile.r { --tile-accent:var(--red); }
+.stat-tile-num { font-family:'Clash Display',Georgia,sans-serif;font-weight:800;font-size:clamp(1.7rem,5vw,2.5rem);letter-spacing:-0.04em;line-height:1;color:var(--tile-accent,var(--accent));margin-bottom:0.3rem;display:block; }
+.stat-tile-num.neutral { color:var(--text); }
+.stat-tile-label { font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-sub);line-height:1.4;margin-bottom:0.25rem; }
+.stat-tile-note { font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--text-muted);line-height:1.55; }
+.bar-row { background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.45rem; }
+.bar-row-top { display:flex;align-items:baseline;justify-content:space-between;margin-bottom:0.45rem; }
+.bar-row-label { font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-sub); }
+.bar-row-val { font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--text); }
+.bar-track { height:4px;background:var(--border);border-radius:99px;overflow:hidden; }
+.bar-fill { height:100%;border-radius:99px;width:0%;transition:width 1.6s cubic-bezier(.16,1,.3,1); }
+.tl { position:relative;padding-left:1.8rem;margin-top:0.5rem; }
+.tl::before { content:'';position:absolute;left:3px;top:8px;bottom:0;width:1px;background:linear-gradient(to bottom,var(--accent),var(--green) 70%,var(--border)); }
+.tl-item { position:relative;padding-bottom:1.6rem; }
+.tl-item:last-child { padding-bottom:0; }
+.tl-dot { position:absolute;left:-1.7rem;top:5px;width:8px;height:8px;border-radius:50%;background:var(--border-hi);border:1.5px solid var(--bg);box-shadow:0 0 0 1px var(--border-hi); }
+.tl-item.key .tl-dot { background:var(--dot-c,var(--accent));box-shadow:0 0 0 1px var(--dot-c,var(--accent)),0 0 10px rgba(77,142,247,0.3);width:10px;height:10px;left:-1.75rem; }
+.tl-date { font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.15rem; }
+.tl-head { font-weight:600;font-size:0.95rem;color:var(--text);margin-bottom:0.2rem;line-height:1.3; }
+.tl-body { font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-sub);line-height:1.7;letter-spacing:0.01em; }
+.caveat { background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:0.85rem 1rem;margin:0.8rem 0;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);line-height:1.7;letter-spacing:0.01em; }
+.caveat strong { color:var(--text-sub); }
+.meta-box { background:var(--card);border:1.5px solid var(--accent);border-radius:12px;padding:1.2rem 1.3rem;margin:1.5rem 0; }
+.meta-box-label { font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:0.6rem; }
+.meta-box-body { font-size:0.92rem;font-weight:600;font-style:italic;color:var(--text);line-height:1.6; }
+.footer { text-align:center;padding-top:2rem;margin-top:3rem;border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-ghost);letter-spacing:0.06em;line-height:2; }
+.reveal { opacity:0;transform:translateY(16px);transition:opacity 0.55s ease,transform 0.55s ease; }
+.reveal.in { opacity:1;transform:translateY(0); }
+
+.qa-btn { display:inline-flex;align-items:center;gap:0.45rem;margin-top:0.6rem;padding:0.55rem 1rem;background:var(--card);border:1.5px solid var(--border-hi);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:700;letter-spacing:0.06em;color:var(--accent);text-decoration:none;cursor:pointer;transition:border-color 0.2s,background 0.2s; }
+.qa-btn:hover { border-color:var(--accent);background:var(--bg2); }
+.qa-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:500;align-items:center;justify-content:center;padding:1.5rem; }
+.qa-overlay.open { display:flex; }
+.qa-modal { background:var(--card);border-radius:14px;width:100%;max-width:780px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.35); }
+.qa-modal-head { display:flex;align-items:center;justify-content:space-between;padding:0.9rem 1.2rem;border-bottom:1px solid var(--border);flex-shrink:0; }
+.qa-modal-title { font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted); }
+.qa-modal-actions { display:flex;align-items:center;gap:0.8rem; }
+.qa-modal-newtab { font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--accent);text-decoration:none;letter-spacing:0.04em; }
+.qa-modal-newtab:hover { text-decoration:underline; }
+.qa-close { width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border-hi);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;color:var(--text-muted);transition:border-color 0.2s; }
+.qa-close:hover { border-color:var(--text);color:var(--text); }
+.qa-modal-body { flex:1;overflow:hidden; }
+.qa-modal-body iframe { width:100%;height:100%;min-height:70vh;border:none;display:block; }
+</style>
+</head>
+<body>
+
+<button class="mode-toggle" onclick="toggleMode()" title="Toggle dark / light mode" aria-label="Toggle theme">
+  <span id="modeIcon">☀</span>
+</button>
+
+<div style="position:sticky;top:0;z-index:150;background:var(--bg);border-bottom:1px solid var(--border);padding:0.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;">
+  <a href="index.html?dash=1" style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:0.04em;">← Back to TokenScale</a>
+  <a href="changelog.html" style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:700;color:var(--text-muted);text-decoration:none;letter-spacing:0.04em;">Changelog</a>
+</div>
+
+<div class="page">
+
+  <div class="masthead reveal">
+    <div class="masthead-kicker">Bilton Projects · Field Notes · May 2026</div>
+    <h1 class="masthead-hed">Token<em>Scale</em><br>by the Numbers</h1>
+    <p class="masthead-dek">A tool built on a phone, without a programming degree, using the AI it was designed to compare. Here is every number we could find.</p>
+    <div class="masthead-byline">
+      <span>Will Bilton</span>
+      <div class="byline-dot"></div>
+      <span>Bilton Projects</span>
+      <div class="byline-dot"></div>
+      <span>May 19 2026</span>
+    </div>
+  </div>
+
+  <p class="body-copy reveal">
+    TokenScale exists because <strong>"$5 per million tokens"</strong> never made intuitive sense. The Hobbit costs $0.06 on Gemini Flash-Lite — that lands. The tool was built to make that translation happen across 16 AI providers, for free, with no sign-up. What follows is the story of how it got built, told in the only language the project understands: numbers.
+  </p>
+
+  <div class="meta-box reveal">
+    <div class="meta-box-label">The irony</div>
+    <div class="meta-box-body">"TokenScale is a tool that helps developers understand what AI API calls cost. It was built entirely <em>using</em> AI API calls. It compares 16 providers — including the one that built it."</div>
+  </div>
+
+  <div class="section-rule reveal" id="qa-report">
+    <div class="section-rule-line"></div>
+    <div class="section-rule-label">At a glance</div>
+    <div class="section-rule-line"></div>
+  </div>
+
+  <div class="stat-cluster reveal">
+    <div class="stat-tile">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num">~46</span>
+      <div class="stat-tile-label">TokenScale sessions</div>
+      <div class="stat-tile-note">Traced from conversation history across this Claude account</div>
+    </div>
+    <div class="stat-tile g">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num">316</span>
+      <div class="stat-tile-label">Days of context</div>
+      <div class="stat-tile-note">From first token pricing curiosity to launch-ready MVP</div>
+    </div>
+  </div>
+
+  <div class="stat-cluster three reveal">
+    <div class="stat-tile a">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num">16k+</span>
+      <div class="stat-tile-label">Lines of code</div>
+      <div class="stat-tile-note">One HTML file. No build tools. No framework.</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num">16</span>
+      <div class="stat-tile-label">AI providers</div>
+      <div class="stat-tile-note">In the comparison table at launch</div>
+    </div>
+    <div class="stat-tile g">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num">6</span>
+      <div class="stat-tile-label">Nights of data</div>
+      <div class="stat-tile-note">Entered by hand. At 8pm. On a phone.</div>
+    </div>
+  </div>
+
+  <div class="stat-cluster reveal">
+    <div class="stat-tile r">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num neutral">0</span>
+      <div class="stat-tile-label">Dev environment</div>
+      <div class="stat-tile-note">No terminal. No npm. No git repository.</div>
+    </div>
+    <div class="stat-tile g">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num">$0</span>
+      <div class="stat-tile-label">Infrastructure cost</div>
+      <div class="stat-tile-note">Cloudflare free tier. Drag-and-drop deploy.</div>
+    </div>
+  </div>
+
+  <div class="section-rule reveal" id="qa-report">
+    <div class="section-rule-line"></div>
+    <div class="section-rule-label">Token estimates</div>
+    <div class="section-rule-line"></div>
+  </div>
+
+  <p class="body-copy reveal">
+    Anthropic doesn't expose per-conversation token counts in the standard interface, so these figures are honest estimates — derived from session count, average message density, and the fact that file-heavy sessions (uploading the 16,000-line HTML file repeatedly) run 60,000–100,000 tokens each. They are likely <em>conservative</em>.
+  </p>
+
+  <div class="bar-row reveal">
+    <div class="bar-row-top"><div class="bar-row-label">Estimated user prompts sent</div><div class="bar-row-val">~800–1,200</div></div>
+    <div class="bar-track"><div class="bar-fill" data-w="65" style="background:var(--accent)"></div></div>
+  </div>
+  <div class="bar-row reveal">
+    <div class="bar-row-top"><div class="bar-row-label">Estimated input tokens</div><div class="bar-row-val">~12–20 million</div></div>
+    <div class="bar-track"><div class="bar-fill" data-w="55" style="background:var(--green)"></div></div>
+  </div>
+  <div class="bar-row reveal">
+    <div class="bar-row-top"><div class="bar-row-label">Estimated output tokens</div><div class="bar-row-val">~8–15 million</div></div>
+    <div class="bar-track"><div class="bar-fill" data-w="45" style="background:var(--amber)"></div></div>
+  </div>
+  <div class="bar-row reveal">
+    <div class="bar-row-top"><div class="bar-row-label">Equivalent pay-per-use API cost</div><div class="bar-row-val">~$150–$300</div></div>
+    <div class="bar-track"><div class="bar-fill" data-w="28" style="background:var(--red)"></div></div>
+  </div>
+
+  <div class="caveat reveal">
+    <strong>Methodology:</strong> ~46 TokenScale-specific sessions out of ~200+ total account sessions. Average 18–25 exchanges each. File-heavy sessions dominate token count due to repeated 16,000-line HTML uploads. Equivalent cost calculated at Claude Sonnet rates ($3/$15 per MTok input/output). All of this was covered by a <strong>$20/month Pro subscription</strong>.
+  </div>
+
+  <div class="section-rule reveal" id="qa-report">
+    <div class="section-rule-line"></div>
+    <div class="section-rule-label">What makes this unusual</div>
+    <div class="section-rule-line"></div>
+  </div>
+
+  <div class="pull-quote reveal">
+    <div class="pull-quote-text">"Every session was on mobile. Most were voice-initiated. The nightly price data is entered manually at 8pm. There's no local dev environment, no git, no build step. The whole product is one HTML file."</div>
+    <div class="pull-quote-attr">— Will Bilton, Bilton Projects</div>
+  </div>
+
+  <div class="pull-quote reveal" style="border-color: var(--green)">
+    <div class="pull-quote-text">"Maybe you should give people clear advice about which AI would be best for them… take the stress out for them. Just a thought."</div>
+    <div class="pull-quote-attr">— Dad · First user · May 17 2026 · Described the next major feature in one paragraph</div>
+  </div>
+
+  <div class="stat-cluster reveal">
+    <div class="stat-tile">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num">100%</span>
+      <div class="stat-tile-label">Mobile built</div>
+      <div class="stat-tile-note">Every prompt, every upload, every iteration — on a phone.</div>
+    </div>
+    <div class="stat-tile g">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num">1</span>
+      <div class="stat-tile-label">File to ship</div>
+      <div class="stat-tile-note">Drag to Cloudflare. Live in under five minutes.</div>
+    </div>
+  </div>
+
+  <div class="stat-cluster reveal">
+    <div class="stat-tile a">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num">1 URL</span>
+      <div class="stat-tile-label">Shareable views</div>
+      <div class="stat-tile-note">Provider, model, and landmark encoded in the link. Copy and share any configuration instantly.</div>
+    </div>
+    <div class="stat-tile g">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num">609</span>
+      <div class="stat-tile-label">Visitors on day one</div>
+      <div class="stat-tile-note">No paid promotion. No existing audience. Just the tool.</div>
+    </div>
+  </div>
+
+  <div class="stat-cluster three reveal">
+    <div class="stat-tile a">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num">8pm</span>
+      <div class="stat-tile-label">The ritual</div>
+      <div class="stat-tile-note">Nightly price entry. By hand. Before the automation arrives.</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num">$20</span>
+      <div class="stat-tile-label">Monthly cost</div>
+      <div class="stat-tile-note">The entire infrastructure bill. Claude Pro subscription.</div>
+    </div>
+    <div class="stat-tile r">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num neutral">0</span>
+      <div class="stat-tile-label">Co-founders</div>
+      <div class="stat-tile-note">Solo. One person. All decisions. All sessions.</div>
+    </div>
+  </div>
+
+  <div class="section-rule reveal" id="qa-report">
+    <div class="section-rule-line"></div>
+    <div class="section-rule-label">The journey</div>
+    <div class="section-rule-line"></div>
+  </div>
+
+  <p class="body-copy reveal">
+    The account opened in <strong>July 2025</strong> with a QR code generator and a slot machine game. TokenScale shipped in <strong>May 2026</strong>. Here is what happened in between.
+  </p>
+
+  <div class="tl reveal">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">July 2025</div>
+      <div class="tl-head">First session ever</div>
+      <div class="tl-body">QR code generator. Slot machine. Fish identification quiz. All on mobile. The account opens. No plan, just curiosity.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">October 2025</div>
+      <div class="tl-head">The question that becomes TokenScale</div>
+      <div class="tl-body">A session titled "Pricing model details" — why does Haiku cost less than Opus? What are tokens, really? The seed is planted.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">October–November 2025</div>
+      <div class="tl-head">Voice-coding on the move</div>
+      <div class="tl-body">Conversations happen while driving. Literally. Ideas captured in motion. Building in fragments, between moments, becomes the pattern.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">December 2025</div>
+      <div class="tl-head">Bilton Projects takes shape</div>
+      <div class="tl-body">The business identity crystallises. Solo freelance setup. The brand that TokenScale will launch under appears for the first time.</div>
+    </div>
+    <div class="tl-item key" style="--dot-c: var(--accent)">
+      <div class="tl-dot"></div>
+      <div class="tl-date">April 22 2026</div>
+      <div class="tl-head">The interactive handbook</div>
+      <div class="tl-body">A full "Token Economics Handbook" is built — scrolling, editorial, animated. The same educational mission as TokenScale but static. The intellectual ancestor. The moment the idea becomes serious.</div>
+    </div>
+    <div class="tl-item key" style="--dot-c: var(--accent)">
+      <div class="tl-dot"></div>
+      <div class="tl-date">Late April 2026</div>
+      <div class="tl-head">The tool form emerges</div>
+      <div class="tl-body">Token Auditor → Claude Explorer → Gemini Explorer. The content landmark framing — "what does The Hobbit cost?" — appears for the first time. This is the core insight.</div>
+    </div>
+    <div class="tl-item key" style="--dot-c: var(--accent)">
+      <div class="tl-dot"></div>
+      <div class="tl-date">May 1 2026</div>
+      <div class="tl-head">The merge — 16 providers</div>
+      <div class="tl-body">Claude and Gemini versions merge. Then expand rapidly across 14 more providers. The comparison table that makes the tool worth sharing is born.</div>
+    </div>
+    <div class="tl-item key" style="--dot-c: var(--green)">
+      <div class="tl-dot"></div>
+      <div class="tl-date">May 13–16 2026</div>
+      <div class="tl-head">The animation sprint</div>
+      <div class="tl-body">Slot machine. Candle-master colour reveal. Market banner tinting. Conversation cost visualiser. Price history changelog. Provider-aware theming. The tool becomes the product.</div>
+    </div>
+    <div class="tl-item key" style="--dot-c: var(--green)">
+      <div class="tl-dot"></div>
+      <div class="tl-date">May 17 2026 — First real user</div>
+      <div class="tl-head">Dad's review</div>
+      <div class="tl-body">"Maybe you should give people clear advice about which AI would be best for them… take the stress out for them." — TokenScale was shared with three people. Dad reviewed it first. In one paragraph, he described the next major feature: the Help Me Choose wizard. TokenScale already had it. He just named why it matters.</div>
+    </div>
+    <div class="tl-item key" style="--dot-c: var(--amber)">
+      <div class="tl-dot"></div>
+      <div class="tl-date">May 20 2026 — Launch Day</div>
+      <div class="tl-head">MVP 2.0 — Ships · Google I/O fires a starting gun</div>
+      <div class="tl-body">16,000 lines. 16 providers. 6 nights of manually entered price history. Shareable URLs. The slot machine animation. The learn index. The parchment price history. One HTML file. Live. And on the same day — Google I/O 2026 launches Gemini 3.5 Flash at $1.50/$9 per million tokens. Five times the old Flash price. The tool that tracks AI pricing had a major pricing change happen on launch day. That's the whole point.</div>
+    </div>
+    <div class="tl-item key" style="--dot-c: var(--green)">
+      <div class="tl-dot"></div>
+      <div class="tl-date">May 21 2026</div>
+      <div class="tl-head">Day two — the retention signal</div>
+      <div class="tl-body">164 UV. 34% of launch peak. 2.3× the pre-launch baseline. The right number to watch after a launch isn't the spike — it's whether people come back. They did. Price history updated across all 16 providers. changelog.html ships: a public record of every price movement, in language anyone can read.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">May 22 2026</div>
+      <div class="tl-head">Retrospective ships. The data moat deepens.</div>
+      <div class="tl-body">This page goes live. Channels that didn't run on launch day — Reddit, Dev.to, email capture — still exist and still will. The data moat grows one night at a time regardless of traffic.</div>
+    </div>
+    <div class="tl-item" style="--dot-c: var(--accent)">
+      <div class="tl-dot"></div>
+      <div class="tl-date">May 23 2026</div>
+      <div class="tl-head">The UI grows up.</div>
+      <div class="tl-body">Biggest single-session improvement run since launch. Per-segment sparkline colouring. A sticky topbar with a conversation slider that appears when the hero scrolls away. Quick-nav pill buttons on both the landing page and dashboard. A fully redesigned price history modal — blur backdrop, provider-coloured top stripe, left/right arrow navigation through all 16 providers, keyboard shortcuts. Redundant controls removed. GitHub added as a backup destination. The tool is starting to feel like a product.</div>
+    </div>
+  </div>
+
+  <div class="section-rule reveal" id="qa-report">
+    <div class="section-rule-line"></div>
+    <div class="section-rule-label">The point</div>
+    <div class="section-rule-line"></div>
+  </div>
+
+  <p class="body-copy reveal">
+    The nightly price data ritual — one entry per provider, by hand, on a phone, at 8pm — is not a limitation waiting to be automated. It is the discipline that makes the tool trustworthy. The automation will come. The habit will stay.
+  </p>
+
+  <p class="body-copy reveal">
+    TokenScale was built to answer a simple question: <strong>what does AI actually cost, in words you recognise?</strong> The answer, it turns out, is also the story of how it was built.
+  </p>
+
+  <div class="meta-box reveal" style="border-color: var(--green)">
+    <div class="meta-box-label" style="color: var(--green)">Try it</div>
+    <div class="meta-box-body" style="font-style: normal; font-size: 0.9rem;">The Hobbit costs $0.06 on Gemini Flash-Lite.<br>Claude Opus would run you $2.85 for the same words.<br>That's a 47× spread — and that's the whole point.<br><br><strong><a href="https://tokenscale.dev" style="color: var(--green); text-decoration: none;">tokenscale.dev</a></strong> — free, no sign-up, all 16 providers.</div>
+  </div>
+
+  <!-- ── CHAPTER 2: After launch ── -->
+
+  <div class="section-rule reveal" id="qa-report">
+    <div class="section-rule-line"></div>
+    <div class="section-rule-label">Launch week · by the numbers</div>
+    <div class="section-rule-line"></div>
+  </div>
+
+  <p class="body-copy reveal">
+    May 20 2026. Product Hunt at 12:01am. Hacker News at 7am PT. X and LinkedIn before noon. Four channels in one day. Here is what actually happened: the good and the honest.
+  </p>
+
+  <div class="stat-cluster reveal">
+    <div class="stat-tile g">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num">486</span>
+      <div class="stat-tile-label">Launch day UV</div>
+      <div class="stat-tile-note">6.9× the pre-launch baseline of 70/day.</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num">164</span>
+      <div class="stat-tile-label">Day-after UV</div>
+      <div class="stat-tile-note">34% of peak. 2.3× baseline. People came back.</div>
+    </div>
+  </div>
+
+  <div class="stat-cluster three reveal">
+    <div class="stat-tile g">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num">756</span>
+      <div class="stat-tile-label">Launch week UV</div>
+      <div class="stat-tile-note">7-day window. Six times pre-launch equivalent.</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num">95.7%</span>
+      <div class="stat-tile-label">Cache rate</div>
+      <div class="stat-tile-note">On peak day. Cloudflare held everything from edge.</div>
+    </div>
+    <div class="stat-tile g">
+      <div class="stat-tile-bar"></div>
+      <span class="stat-tile-num">$0</span>
+      <div class="stat-tile-label">Server bill</div>
+      <div class="stat-tile-note">152 MB served on launch day. Free tier. No invoice.</div>
+    </div>
+  </div>
+
+  <div class="section-rule reveal" id="qa-report">
+    <div class="section-rule-line"></div>
+    <div class="section-rule-label">The honest bit</div>
+    <div class="section-rule-line"></div>
+  </div>
+
+  <p class="body-copy reveal">
+    Product Hunt ended at <strong>#82 with 2 points</strong>. Hacker News generated real traffic but not a front-page run. No comment thread to engage with. LinkedIn reached animation and entertainment professionals, Will's industry network, not the AI developers the tool was built for. Reddit, Dev.to, email capture, tool directories: none of them happened on launch day. There is no list to email when prices change next time.
+  </p>
+
+  <div class="pull-quote reveal">
+    <div class="pull-quote-text">"We found that our own hero number, $0.04, was the input cost only. The correct total was $0.06. We corrected it publicly before the traffic arrived. Within 48 hours, Google proved the lesson differently: on Gemini Flash 3.5, the output cost alone is now $1.14."</div>
+    <div class="pull-quote-attr">— The $0.04 → $0.06 correction · May 20 2026 · The better story</div>
+  </div>
+
+  <p class="body-copy reveal">
+    Catching and publishing that correction, before the HN post, before the Product Hunt page saw traffic, was the right call. The difference between input cost and output cost is exactly the kind of thing TokenScale exists to surface. Getting it wrong, and saying so, made that point better than getting it right would have.
+  </p>
+
+  <div class="caveat reveal">
+    The launch was not a failure. It was a beginning. Every channel that didn't execute on May 20 still exists. The data history keeps building every night regardless of traffic. The gap between cheapest and most expensive provider is still 35×, and most of the people who need to understand that haven't found the tool yet.
+  </div>
+
+  <div class="section-rule reveal" id="qa-report">
+    <div class="section-rule-line"></div>
+    <div class="section-rule-label">What a colleague saw</div>
+    <div class="section-rule-line"></div>
+  </div>
+
+  <p class="body-copy reveal">
+    Two weeks before launch, Will showed an early version at work. Just Claude pricing at the time, before the tool expanded to 16 providers. Before a single marketing post had gone out. When the cost breakdown appeared on screen the room leaned in. Not because they understand tokens. Not because they use the API. They got interested because they could see <em>how the person who built it thinks.</em>
+  </p>
+
+  <p class="body-copy reveal">
+    What caught their attention was a document generated after the session: a formal QA training report, formatted for product and engineering teams, based entirely on how Will had worked. Five principles. Seven competencies. A scorecard. Signal-to-noise ratio: 10/10. Acceptance discipline: 10/10. Bug reproduction quality: 9/10. The kind of document you could table in a meeting. It was produced by analysing Will's own prompts and working style across 40 issues raised during the TokenScale build. A person putting their own process under the same scrutiny they applied to the product. That is what landed. The verified dates, the word count badge, the public correction, the before-and-after cost tables: none of these are features to a non-technical audience. They are evidence of an approach. Checking your numbers, being honest when they are wrong, keeping a record. That is a QA instinct. It shows up whether or not you know what a token is.
+  </p>
+
+  <button class="qa-btn" onclick="document.getElementById('qaOverlay').classList.add('open')">
+    View the QA report &rarr;
+  </button>
+
+  <div class="meta-box reveal">
+    <div class="meta-box-label">The signal</div>
+    <div class="meta-box-body">"They were not excited about token pricing. They were seeing how the person who built it approaches a problem."</div>
+  </div>
+
+  <p class="body-copy reveal">
+    Anyone who has ever had to stand behind a number in a meeting, a budget line, a schedule estimate, a word count, recognises that instinct immediately. TokenScale turns out to speak to that audience too, even if they never open an API.
+  </p>
+
+
+  <div class="footer reveal">
+    <a href="index.html" onclick="history.length>1 ? (event.preventDefault(), history.back()) : null" style="color:var(--accent); text-decoration:none; font-weight:700;">← Back to TokenScale</a>
+    &nbsp;·&nbsp;
+    <a href="changelog.html" style="color:var(--text-muted); text-decoration:none;">Changelog →</a><br><br>
+    TokenScale · Bilton Projects · Will Bilton<br>
+    Built on Claude · Compared 16 providers including Claude<br>
+    Statistics derived from conversation history analysis · Updated May 23 2026
+  </div>
+
+</div>
+
+<script>
+function toggleMode() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('modeIcon').textContent = isDark ? '☀' : '☾';
+  localStorage.setItem('ts-theme', isDark ? 'light' : 'dark');
+}
+(function() {
+  const saved = localStorage.getItem('ts-theme');
+  if (saved) { document.documentElement.setAttribute('data-theme', saved); document.getElementById('modeIcon').textContent = saved === 'dark' ? '☾' : '☀'; }
+})();
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      e.target.querySelectorAll('.bar-fill').forEach(bar => { bar.style.width = (bar.dataset.w || 0) + '%'; });
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"f6b906ce778146bb8d88b0a9ec86e13a","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+
+<div class="qa-overlay" id="qaOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="qa-modal">
+    <div class="qa-modal-head">
+      <span class="qa-modal-title">QA Feedback Excellence · Training Report</span>
+      <div class="qa-modal-actions">
+        <a class="qa-modal-newtab" href="qa-report.pdf" target="_blank" rel="noopener">Open in new tab ↗</a>
+        <button class="qa-close" onclick="document.getElementById('qaOverlay').classList.remove('open')" aria-label="Close">✕</button>
+      </div>
+    </div>
+    <div class="qa-modal-body">
+      <iframe src="qa-report.pdf" title="QA Feedback Excellence Training Report"></iframe>
+    </div>
+  </div>
+</div>
+</body>
+</html>

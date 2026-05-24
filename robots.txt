@@ -1,0 +1,39 @@
+# robots.txt — tokenscale.dev
+# TokenScale is a free, open AI pricing tool. All crawlers welcome.
+
+User-agent: *
+Allow: /
+
+# AI model training and indexing crawlers — explicitly welcome
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+# Sitemap
+Sitemap: https://tokenscale.dev/sitemap.xml

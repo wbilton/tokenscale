@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TokenScale · Changelog</title>
+<meta name="description" content="A running record of what changed at TokenScale — product updates, price movements, and what they mean in plain English.">
+<meta property="og:title" content="TokenScale · Changelog">
+<meta property="og:description" content="Price changes explained in words you recognise. The Hobbit went from $0.35 to $1.33 on Gemini Flash 3.5 overnight.">
+<meta property="og:image" content="https://tokenscale.dev/og-image.png">
+<meta property="og:url" content="https://tokenscale.dev/changelog">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;700&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@700,800&display=swap');
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+
+[data-theme="light"]{
+  --bg:#f0ede8;--bg2:#e8e4de;--card:#faf8f5;--border:#d4cfc8;--border-hi:#b8b2aa;
+  --text:#1e1c18;--text-sub:#4a4640;--text-muted:#8a8278;--text-ghost:#b8b0a8;
+  --accent:#1967d2;--green:#0a7c4e;--amber:#a05a00;--red:#b83030;--num-bg:#f5f2ee;
+}
+[data-theme="dark"]{
+  --bg:#131210;--bg2:#1c1a17;--card:#1e1c18;--border:#2e2b26;--border-hi:#46423c;
+  --text:#f0ede8;--text-sub:#a09890;--text-muted:#635e58;--text-ghost:#45413c;
+  --accent:#4d8ef7;--green:#2aad78;--amber:#e8a020;--red:#e05050;--num-bg:#252220;
+}
+
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Lora',Georgia,serif;line-height:1.7;min-height:100vh;transition:background 0.3s,color 0.3s;}
+
+/* ── NAV ── */
+.topnav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
+.nav-brand{font-family:'Clash Display',Georgia,sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-0.03em;text-decoration:none;color:var(--text);}
+.nav-brand em{font-style:normal;color:var(--accent);}
+.nav-links{display:flex;align-items:center;gap:1.2rem;}
+.nav-link{font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;transition:color 0.15s;}
+.nav-link:hover,.nav-link.active{color:var(--accent);}
+.mode-toggle{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border-hi);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.8rem;color:var(--text-sub);transition:border-color 0.2s;}
+.mode-toggle:hover{border-color:var(--accent);}
+
+/* ── LAYOUT ── */
+.page{max-width:640px;margin:0 auto;padding:0 1.5rem 6rem;}
+.masthead{padding:3rem 0 2rem;border-bottom:2px solid var(--text);margin-bottom:3rem;}
+.masthead-kicker{font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;}
+.masthead-kicker::before{content:'';display:inline-block;width:24px;height:1.5px;background:var(--accent);}
+.masthead-hed{font-family:'Clash Display',Georgia,sans-serif;font-weight:800;font-size:clamp(2rem,7vw,3.2rem);letter-spacing:-0.04em;line-height:1;color:var(--text);margin-bottom:0.75rem;}
+.masthead-hed em{font-style:normal;color:var(--accent);}
+.masthead-dek{font-size:1rem;color:var(--text-sub);line-height:1.65;max-width:500px;}
+
+/* ── ENTRIES ── */
+.entry{margin-bottom:3.5rem;padding-bottom:3.5rem;border-bottom:1px solid var(--border);}
+.entry:last-of-type{border-bottom:none;}
+
+.entry-meta{display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem;}
+.entry-date{font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);}
+.badge{font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0.2em 0.6em;border-radius:99px;border:1.5px solid;}
+.badge-version{color:var(--accent);border-color:var(--accent);background:transparent;}
+.badge-price{color:var(--red);border-color:var(--red);background:transparent;}
+.badge-fix{color:var(--green);border-color:var(--green);background:transparent;}
+.badge-data{color:var(--amber);border-color:var(--amber);background:transparent;}
+
+.entry-hed{font-family:'Clash Display',Georgia,sans-serif;font-weight:700;font-size:clamp(1.3rem,4vw,1.7rem);letter-spacing:-0.03em;line-height:1.1;color:var(--text);margin-bottom:0.6rem;}
+.entry-dek{font-size:0.95rem;color:var(--text-sub);line-height:1.7;margin-bottom:1.4rem;}
+
+/* ── COMPARISON TABLE ── */
+.price-table-wrap{margin:1.4rem 0;overflow-x:auto;}
+.price-table{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:0.72rem;}
+.price-table th{text-align:left;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);padding:0.5rem 0.75rem;border-bottom:2px solid var(--border-hi);}
+.price-table td{padding:0.55rem 0.75rem;border-bottom:1px solid var(--border);color:var(--text-sub);vertical-align:middle;}
+.price-table tr:last-child td{border-bottom:none;}
+.price-table tr.total-row td{font-weight:700;color:var(--text);background:var(--bg2);}
+.price-table .num{text-align:right;font-weight:700;}
+.price-table .unchanged{color:var(--text-muted);}
+.price-table .up{color:var(--red);}
+.price-table .down{color:var(--green);}
+.price-table .arrow{font-size:0.65rem;margin:0 0.2em;}
+.price-table .provider-col{color:var(--text);font-weight:700;}
+.table-label{font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.4rem;margin-top:1.2rem;}
+
+/* ── NARRATIVE CALLOUT ── */
+.callout{margin:1.4rem 0;padding:1.1rem 1.3rem;border-left:3px solid var(--accent);background:var(--card);border-radius:0 10px 10px 0;box-shadow:0 2px 12px rgba(0,0,0,0.05);}
+.callout.alert{border-left-color:var(--red);}
+.callout.good{border-left-color:var(--green);}
+.callout-label{font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.5rem;}
+.callout-text{font-size:0.95rem;font-style:italic;color:var(--text);line-height:1.65;}
+
+/* ── CHANGE LIST ── */
+.change-list{list-style:none;margin:0.8rem 0;}
+.change-list li{font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-sub);line-height:1.8;padding-left:1.2em;position:relative;}
+.change-list li::before{content:'→';position:absolute;left:0;color:var(--text-muted);}
+
+/* ── STAT PILLS ── */
+.stat-row{display:flex;flex-wrap:wrap;gap:0.6rem;margin:1rem 0;}
+.stat-pill{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0.6rem 0.9rem;display:flex;flex-direction:column;gap:0.15rem;}
+.stat-pill-num{font-family:'Clash Display',Georgia,sans-serif;font-weight:800;font-size:1.3rem;letter-spacing:-0.03em;line-height:1;}
+.stat-pill-num.up{color:var(--red);}
+.stat-pill-num.down{color:var(--green);}
+.stat-pill-num.neutral{color:var(--text);}
+.stat-pill-lbl{font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);}
+
+/* ── FOOTER ── */
+.footer{text-align:center;padding-top:2rem;margin-top:3rem;border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-ghost);letter-spacing:0.06em;line-height:2;}
+.footer a{color:var(--text-muted);text-decoration:none;}
+.footer a:hover{color:var(--accent);}
+
+.reveal{opacity:0;transform:translateY(14px);transition:opacity 0.5s ease,transform 0.5s ease;}
+.revealed{opacity:1;transform:none;}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html?dash=1" style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:0.04em;">← Back to TokenScale</a>
+  <div class="nav-links">
+    <a class="nav-link" href="story.html">Story</a>
+    <a class="nav-link active" href="changelog.html">Changelog</a>
+    <button class="mode-toggle" onclick="toggleMode()" title="Toggle dark mode">🌙</button>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="masthead reveal">
+    <div class="masthead-kicker">Changelog</div>
+    <h1 class="masthead-hed">What changed,<br><em>and what it cost.</em></h1>
+    <p class="masthead-dek">Every product update and price movement — explained in words, not API docs. Because a 400% price increase means more when you see it as a novel going from $0.35 to $1.33.</p>
+  </div>
+
+
+  <!-- ── ENTRY: PRICE CHANGE GEMINI ── -->
+  <div class="entry reveal">
+    <div class="entry-meta">
+      <span class="entry-date">May 2026</span>
+      <span class="badge badge-price">Price Change</span>
+    </div>
+    <h2 class="entry-hed">Gemini Flash 3.5 quietly got 5× more expensive</h2>
+    <p class="entry-dek">Google updated pricing on their mid-tier Gemini model. Silver (Flash-Lite) stayed the same. Gold (Flash 3.5) did not.</p>
+
+    <div class="stat-row">
+      <div class="stat-pill"><span class="stat-pill-num up">+400%</span><span class="stat-pill-lbl">Flash 3.5 input</span></div>
+      <div class="stat-pill"><span class="stat-pill-num up">+260%</span><span class="stat-pill-lbl">Flash 3.5 output</span></div>
+      <div class="stat-pill"><span class="stat-pill-num neutral">—</span><span class="stat-pill-lbl">Flash-Lite (unchanged)</span></div>
+    </div>
+
+    <div class="table-label">Rate changes per million tokens</div>
+    <div class="price-table-wrap">
+      <table class="price-table">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th class="num">Input before</th>
+            <th class="num">Input after</th>
+            <th class="num">Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="provider-col">Flash-Lite 2.5 · Silver</td>
+            <td class="num unchanged">$0.10</td>
+            <td class="num unchanged">$0.10</td>
+            <td class="num unchanged">—</td>
+          </tr>
+          <tr>
+            <td class="provider-col">Flash 3.5 · Gold</td>
+            <td class="num">$0.30</td>
+            <td class="num up">$1.50</td>
+            <td class="num up">+400% ↑</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-label">🧙 The Hobbit — 95,356 words — what it now costs to process</div>
+    <div class="price-table-wrap">
+      <table class="price-table">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th class="num">Before</th>
+            <th class="num">After</th>
+            <th class="num">Difference</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="provider-col">Flash-Lite 2.5 · Silver</td>
+            <td class="num unchanged">$0.06</td>
+            <td class="num unchanged">$0.06</td>
+            <td class="num unchanged">—</td>
+          </tr>
+          <tr>
+            <td class="provider-col">Flash 3.5 · Gold</td>
+            <td class="num">$0.35</td>
+            <td class="num up">$1.33</td>
+            <td class="num up">+$0.98 · +380% ↑</td>
+          </tr>
+          <tr class="total-row">
+            <td>Gap between tiers</td>
+            <td class="num">$0.29</td>
+            <td class="num up">$1.27</td>
+            <td class="num up">4.4× wider</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout alert">
+      <div class="callout-label">The irony</div>
+      <div class="callout-text">TokenScale launched saying "The Hobbit = $0.06 on Gemini Flash-Lite." That's still true. But the next model up — Flash 3.5 — had its Hobbit cost jump from $0.35 to $1.33 almost immediately after launch. The gap between Silver and Gold went from $0.29 to $1.27 overnight. If you were building on Flash 3.5, you just got a 380% bill increase with no warning. This is exactly what TokenScale exists to catch.</div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">What this means practically</div>
+      <div class="callout-text">If you're sending novel-length context (100K tokens) to Gemini, Flash-Lite is still the smart choice — unchanged, and still the cheapest full-context model in the comparison. Flash 3.5 now costs 22× more for the same input. The tier gap matters more than ever.</div>
+    </div>
+  </div>
+
+
+  <!-- ── ENTRY: v2.2 LAUNCH DAY ── -->
+  <div class="entry reveal">
+    <div class="entry-meta">
+      <span class="entry-date">20 May 2026</span>
+      <span class="badge badge-fix">v2.2 · Launch Day</span>
+    </div>
+    <h2 class="entry-hed">We caught a pricing error on our own launch morning</h2>
+    <p class="entry-dek">Hours before posting to Hacker News, we found that our hero number was quoting input cost only. Here's what we fixed — and why it made for a better story.</p>
+
+    <div class="table-label">The correction</div>
+    <div class="price-table-wrap">
+      <table class="price-table">
+        <thead>
+          <tr>
+            <th>What we said</th>
+            <th class="num">What it actually was</th>
+            <th class="num">Corrected to</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="provider-col">The Hobbit on Gemini Flash</td>
+            <td class="num up">$0.04 (input only)</td>
+            <td class="num down">$0.06 (total)</td>
+          </tr>
+          <tr>
+            <td>Input cost</td>
+            <td class="num">$0.01</td>
+            <td class="num unchanged">$0.01</td>
+          </tr>
+          <tr>
+            <td>Output cost</td>
+            <td class="num up">missing</td>
+            <td class="num">$0.05</td>
+          </tr>
+          <tr class="total-row">
+            <td>Correct total</td>
+            <td class="num up">$0.04 ✗</td>
+            <td class="num down">$0.06 ✓</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout good">
+      <div class="callout-label">The lesson</div>
+      <div class="callout-text">The very thing TokenScale is built to prevent — quoting only input cost and missing output — was in our own marketing copy. Caught and corrected before the HN post went live. The distinction between input and output pricing is more important than it looks. Output tokens are usually 3–5× more expensive per token, and most real conversations generate far more output than people expect.</div>
+    </div>
+
+    <ul class="change-list">
+      <li>Fixed Silver tier pill visibility in dark modes (charcoal / midnight / pitch)</li>
+      <li>Fixed Silver tier hero slider right-track opacity</li>
+      <li>Added Hobbit word count verification: ✓ 95,356 words · Project Gutenberg</li>
+      <li>Added llms.txt for AI model discoverability</li>
+      <li>Added robots.txt explicitly welcoming all major AI crawlers</li>
+      <li>Updated Product Hunt description + gallery before launch traffic arrived</li>
+    </ul>
+  </div>
+
+
+  <!-- ── ENTRY: v2.1 ── -->
+  <div class="entry reveal">
+    <div class="entry-meta">
+      <span class="entry-date">19 May 2026</span>
+      <span class="badge badge-fix">v2.1 · Pre-Launch Fix</span>
+    </div>
+    <h2 class="entry-hed">Quiz button crash — caught one day before launch</h2>
+    <p class="entry-dek">The "Which model should I use?" quiz was silently failing on first run. A missing DOM element meant the result screen crashed before anyone could see a recommendation.</p>
+
+    <ul class="change-list">
+      <li>Fixed hmcProviderLink — element referenced in JS but missing from HTML</li>
+      <li>Added provider name to CTA: now reads "See Mistral on TokenScale →"</li>
+      <li>Fixed blank-screen flash when quiz recommends Anthropic (the default provider)</li>
+      <li>Added 500ms fallback in goToDashboard() so cleanup always runs</li>
+    </ul>
+
+    <div class="callout good">
+      <div class="callout-label">Why this matters</div>
+      <div class="callout-text">The quiz is the main personalisation hook — it routes new visitors to the right provider before they see pricing. A silent crash on the most common recommendation (Anthropic) would have cost us conversions on HN launch day without us ever knowing.</div>
+    </div>
+  </div>
+
+
+  <!-- ── ENTRY: v2.0 ── -->
+  <div class="entry reveal">
+    <div class="entry-meta">
+      <span class="entry-date">18 May 2026</span>
+      <span class="badge badge-version">v2.0 · Launch</span>
+    </div>
+    <h2 class="entry-hed">TokenScale ships — 16 providers, one page</h2>
+    <p class="entry-dek">The first public version. A single HTML file, no backend, no sign-up. Pricing for 16 AI providers expressed in content you recognise.</p>
+
+    <div class="table-label">Pricing spread at launch — mid-tier input cost per million tokens</div>
+    <div class="price-table-wrap">
+      <table class="price-table">
+        <thead>
+          <tr>
+            <th>Provider</th>
+            <th>Model</th>
+            <th class="num">$/M input</th>
+            <th class="num">Hobbit cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="provider-col">DeepSeek</td><td>V4 Flash</td><td class="num down">$0.14</td><td class="num down">$0.02</td></tr>
+          <tr><td class="provider-col">Groq</td><td>Llama 3.1 8B</td><td class="num">$0.05</td><td class="num">$0.01</td></tr>
+          <tr><td class="provider-col">Gemini</td><td>Flash-Lite 2.5</td><td class="num">$0.10</td><td class="num">$0.06</td></tr>
+          <tr><td class="provider-col">Mistral</td><td>Small</td><td class="num">$0.10</td><td class="num">$0.01</td></tr>
+          <tr><td class="provider-col">Anthropic</td><td>Claude Haiku 4.5</td><td class="num">$1.00</td><td class="num">$0.13</td></tr>
+          <tr><td class="provider-col">OpenAI</td><td>GPT-5.4</td><td class="num">$2.50</td><td class="num">$0.32</td></tr>
+          <tr><td class="provider-col">OpenAI</td><td>GPT-5.5</td><td class="num up">$5.00</td><td class="num up">$0.63</td></tr>
+          <tr class="total-row"><td colspan="2">Spread cheapest → most expensive</td><td class="num up" colspan="2">35× apart</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">The insight that launched this</div>
+      <div class="callout-text">"$5 per million tokens" tells you nothing. "The Hobbit costs $0.06 on Gemini Flash-Lite, and $0.63 on GPT-5.5" tells you everything. TokenScale was built to make that translation automatic — for any content size, across all 16 providers, updated nightly.</div>
+    </div>
+  </div>
+
+
+  <footer class="footer">
+    <div><a href="index.html?dash=1" style="color:var(--accent);font-weight:700;">← Back to TokenScale</a></div>
+    <div><a href="index.html?dash=1">tokenscale.dev</a> · by <a href="https://linkedin.com/in/willbilton">Will Bilton</a> · Bilton Projects</div>
+    <div>Pricing verified nightly · Free · No sign-up</div>
+  </footer>
+
+</div>
+
+<script>
+function toggleMode(){
+  const h=document.documentElement;
+  h.dataset.theme=h.dataset.theme==='dark'?'light':'dark';
+  document.querySelector('.mode-toggle').textContent=h.dataset.theme==='dark'?'☀️':'🌙';
+}
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');obs.unobserve(e.target);}});
+},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
