@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TokenScale · What the models say</title>
+<meta name="description" content="We asked five AI platforms to review TokenScale. They didn't know they were in the comparison table.">
+<meta property="og:title" content="TokenScale · What the models say">
+<meta property="og:description" content="ChatGPT, Gemini, Perplexity, Grok, and Claude reviewed the tool that prices them. Unedited.">
+<meta property="og:image" content="https://tokenscale.dev/og-image.png">
+<meta property="og:url" content="https://tokenscale.dev/reviews.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  [data-theme="light"] {
+    --bg: #e8e6e1;
+    --bg2: #dedad4;
+    --bg3: #f0ede8;
+    --border: #c8c4bc;
+    --border2: #b0aca4;
+    --text: #2a2824;
+    --text2: #5a5650;
+    --text3: #8a8680;
+    --accent: #2a2824;
+    --green-bg: rgba(59,109,17,0.10);
+    --green-border: rgba(59,130,50,0.35);
+    --green-text: #2d7a1a;
+    --amber-bg: rgba(133,79,11,0.12);
+    --amber-border: rgba(180,110,20,0.35);
+    --amber-text: #7a5000;
+    --red-bg: rgba(163,45,45,0.10);
+    --red-border: rgba(180,80,80,0.35);
+    --red-text: #a03030;
+  }
+
+  [data-theme="dark"] {
+    --bg: #0e0e0e;
+    --bg2: #161616;
+    --bg3: #1e1e1e;
+    --border: rgba(255,255,255,0.09);
+    --border2: rgba(255,255,255,0.15);
+    --text: #e8e6e0;
+    --text2: #9e9c96;
+    --text3: #5e5c58;
+    --accent: #e8e6e0;
+    --green-bg: rgba(59,109,17,0.15);
+    --green-border: rgba(97,196,89,0.35);
+    --green-text: #7dc96e;
+    --amber-bg: rgba(133,79,11,0.15);
+    --amber-border: rgba(239,159,39,0.35);
+    --amber-text: #c8902a;
+    --red-bg: rgba(163,45,45,0.15);
+    --red-border: rgba(240,149,149,0.3);
+    --red-text: #e07070;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  /* ── Data-bg overrides ── */
+  [data-bg="charcoal"] { --bg:#1c1a18;--bg2:#252320;--bg3:#2c2a27;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);--text:#f0ede8;--text2:#b8b0a6;--text3:#7a7570;--accent:#f0ede8; }
+  [data-bg="midnight"] { --bg:#0d1117;--bg2:#161b22;--bg3:#1c2128;--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);--text:#e6edf3;--text2:#8d96a0;--text3:#6e7680;--accent:#e6edf3; }
+  [data-bg="pitch"]    { --bg:#0a0a0a;--bg2:#0f0f0f;--bg3:#141414;--border:rgba(255,255,255,0.05);--border2:rgba(255,255,255,0.10);--text:#ececec;--text2:#909090;--text3:#5a5a5a;--accent:#ececec; }
+  /* ── Palette button ── */
+  .palette-btn { position:fixed;top:0.85rem;right:0.9rem;z-index:200;background:var(--bg2);border:1.5px solid var(--border2);border-radius:10px;cursor:pointer;padding:0.35rem 0.55rem 0.3rem;display:flex;align-items:center;gap:0.4rem;transition:border-color 0.2s,background 0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.12);-webkit-tap-highlight-color:transparent; }
+  .palette-btn:hover { border-color:var(--text2); }
+  .palette-btn-dots { display:grid;grid-template-columns:1fr 1fr;gap:2px;width:14px;height:14px; }
+  .palette-btn-dots span { border-radius:50%;width:5px;height:5px; }
+  .palette-btn-label { font-family:'JetBrains Mono',monospace;font-size:0.42rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);white-space:nowrap; }
+  /* ── Palette dropdown ── */
+  .palette-dropdown { position:fixed;top:3.2rem;right:0.75rem;z-index:300;background:var(--bg3);border:1px solid var(--border2);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,0.18),0 2px 8px rgba(0,0,0,0.1);padding:0.7rem 0.6rem 0.6rem;width:198px;display:none;flex-direction:column;gap:0.3rem;animation:pdropIn 0.18s cubic-bezier(.34,1.56,.64,1); }
+  .palette-dropdown.open { display:flex; }
+  @keyframes pdropIn { from{opacity:0;transform:translateY(-6px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+  .pd-close-btn { position:absolute;top:0.45rem;right:0.45rem;width:1.5rem;height:1.5rem;background:rgba(120,116,110,0.12);border:1px solid rgba(120,116,110,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:var(--text3);cursor:pointer;transition:background .15s;-webkit-tap-highlight-color:transparent;line-height:1; }
+  .pd-close-btn:hover { background:rgba(120,116,110,0.24); }
+  .palette-drop-label { font-family:'JetBrains Mono',monospace;font-size:0.44rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3);padding:0.1rem 0.4rem 0.35rem;border-bottom:1px solid var(--border);margin-bottom:0.1rem;padding-right:1.8rem; }
+  .bg-options { display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;padding:0.3rem 0.2rem 0.35rem; }
+  .bg-option { display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:1px solid var(--border);border-radius:9px;padding:7px 4px 6px;cursor:pointer;position:relative;transition:border-color .2s,background .2s;-webkit-tap-highlight-color:transparent; }
+  .bg-option:hover { border-color:var(--border2); }
+  .bg-option.active { border-color:var(--text);background:rgba(0,0,0,0.07); }
+  [data-bg] .bg-option.active { background:rgba(255,255,255,0.08);border-color:var(--border2); }
+  .bg-swatch { width:22px;height:22px;border-radius:6px;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,0.25); }
+  .bg-label { font-family:'JetBrains Mono',monospace;font-size:0.36rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--text3);white-space:nowrap; }
+  .bg-option.active .bg-label { color:var(--text2); }
+  .bg-check { position:absolute;top:3px;right:4px;font-size:0.48rem;color:var(--text);opacity:0;transition:opacity .15s; }
+  .bg-option.active .bg-check { opacity:1; }
+
+  /* ── Nav ── */
+  .topnav{display:flex;align-items:center;justify-content:space-between;padding:0.9rem 7rem 0.9rem 1.5rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:150;}
+  .nav-back{font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:700;color:var(--text2);text-decoration:none;letter-spacing:0.04em;transition:color 0.15s;}
+  .nav-back:hover{color:var(--text);}
+  .nav-links{display:flex;align-items:center;gap:1.2rem;}
+  .nav-link{font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);text-decoration:none;transition:color 0.15s;}
+  .nav-link:hover,.nav-link.active{color:var(--text);}
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 0.75rem;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: clamp(26px, 4vw, 36px);
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+  }
+
+  h1 em { font-style: italic; }
+
+  .subhead {
+    font-size: 15px;
+    color: var(--text2);
+    line-height: 1.65;
+    margin-bottom: 1rem;
+    max-width: 560px;
+  }
+
+  .meta-line {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  /* consensus */
+  .consensus {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .consensus-score {
+    font-family: 'DM Serif Display', serif;
+    font-size: 56px;
+    line-height: 1;
+    color: var(--text);
+    min-width: 100px;
+  }
+
+  .consensus-score small {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    display: block;
+    margin-top: 6px;
+  }
+
+  .consensus-right { flex: 1; }
+
+  .consensus-label {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+
+  .meter-track {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .meter-fill { height: 100%; background: var(--text2); border-radius: 2px; }
+  .meter-note { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); }
+
+  /* section label */
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  /* review cards */
+  .review-card {
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    background: var(--bg);
+    transition: border-color 0.15s;
+  }
+
+  .review-card:hover { border-color: var(--border2); }
+  .review-card.featured { border-color: rgba(97,196,89,0.3); }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .reviewer-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .reviewer-sub {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 3px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .pill-green { background: var(--green-bg); border: 0.5px solid var(--green-border); color: var(--green-text); }
+  .pill-amber { background: var(--amber-bg); border: 0.5px solid var(--amber-border); color: var(--amber-text); }
+
+  blockquote {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text2);
+    padding-left: 1rem;
+    border-left: 2px solid var(--border2);
+    margin: 0 0 1rem;
+  }
+
+  .review-body {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.65;
+    margin-bottom: 0.75rem;
+  }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
+
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    color: var(--text3);
+  }
+
+  .tag-red { background: var(--red-bg); border-color: var(--red-border); color: var(--red-text); }
+
+  .card-footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding-top: 0.85rem;
+    border-top: 0.5px solid var(--border);
+  }
+
+  .score { font-family: 'DM Mono', monospace; font-size: 20px; color: var(--text); }
+  .score small { font-size: 10px; color: var(--text3); display: block; }
+  .card-date { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); }
+
+  /* callout */
+  .callout {
+    background: var(--bg2);
+    border-left: 2px solid var(--border2);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.75;
+  }
+
+  .callout strong { color: var(--text); font-weight: 500; }
+
+  /* footer */
+  .page-footer {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 0.5px solid var(--border);
+    line-height: 2;
+  }
+
+  .page-footer a { color: var(--text2); text-decoration: none; }
+  .page-footer a:hover { color: var(--text); }
+
+  @media (max-width: 600px) {
+    .container { padding: 2rem 1.25rem 4rem; }
+    .consensus { flex-direction: column; gap: 1rem; }
+    .consensus-score { font-size: 44px; }
+    .topnav { padding: 0.9rem 5.5rem 0.9rem 1rem; }
+  }
+</style>
+<script>
+/* ── No-flash bg restore — runs before first paint ── */
+(function(){var b=localStorage.getItem('ts-bg');if(b&&['charcoal','midnight','pitch'].includes(b))document.documentElement.setAttribute('data-bg',b);})();
+</script>
+</head>
+<body>
+
+<button class="palette-btn" id="paletteBtn" onclick="togglePaletteDropdown(event)" title="Change background">
+  <div class="palette-btn-dots" id="paletteBtnDots">
+    <span style="background:#c8c4bc;"></span>
+    <span style="background:#1c1a18;"></span>
+    <span style="background:#0d1117;"></span>
+    <span style="background:#080808;"></span>
+  </div>
+  <span class="palette-btn-label">Palette</span>
+</button>
+<div class="palette-dropdown" id="paletteDropdown">
+  <button class="pd-close-btn" onclick="closePaletteDropdown()" title="Close">✕</button>
+  <div class="palette-drop-label">Background</div>
+  <div class="bg-options">
+    <button class="bg-option active" id="bgopt-light"    onclick="setBg('light')">
+      <div class="bg-swatch" style="background:#e8e6e1;border:1px solid #c8c4bc;"></div>
+      <span class="bg-label">Light</span>
+      <span class="bg-check" id="bgcheck-light">✓</span>
+    </button>
+    <button class="bg-option" id="bgopt-charcoal" onclick="setBg('charcoal')">
+      <div class="bg-swatch" style="background:#1c1a18;"></div>
+      <span class="bg-label">Charcoal</span>
+      <span class="bg-check" id="bgcheck-charcoal"></span>
+    </button>
+    <button class="bg-option" id="bgopt-midnight" onclick="setBg('midnight')">
+      <div class="bg-swatch" style="background:#0d1117;"></div>
+      <span class="bg-label">Midnight</span>
+      <span class="bg-check" id="bgcheck-midnight"></span>
+    </button>
+    <button class="bg-option" id="bgopt-pitch"    onclick="setBg('pitch')">
+      <div class="bg-swatch" style="background:#080808;"></div>
+      <span class="bg-label">Pitch</span>
+      <span class="bg-check" id="bgcheck-pitch"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="topnav">
+  <a class="nav-back" href="index.html">← Back to TokenScale</a>
+  <div class="nav-links">
+    <a class="nav-link" href="story.html">Story</a>
+    <a class="nav-link active" href="reviews.html">Reviews</a>
+    <a class="nav-link" href="changelog.html">Changelog</a>
+  </div>
+</nav>
+
+<main class="container">
+
+  <div class="eyebrow">Bilton Projects · Field Notes · May 2026</div>
+
+  <h1>What the <em>models we compare</em><br>say about us</h1>
+
+  <p class="subhead">We asked five AI platforms the same question: "What are your thoughts on tokenscale.dev?" They didn't know they were in the comparison table. These are their unedited answers.</p>
+
+  <div class="meta-line">Captured May 23 2026 · 5 reviewers · ChatGPT · Gemini · Perplexity · Grok · Claude · All unsolicited · All unedited</div>
+
+  <div class="consensus">
+    <div class="consensus-score">4.1<small>avg · /5</small></div>
+    <div class="consensus-right">
+      <div class="consensus-label">AI critic consensus — strong recommend</div>
+      <div class="meter-track"><div class="meter-fill" style="width:82%"></div></div>
+      <div class="meter-note">5 reviewers · weighted by depth of analysis · May 23 2026</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>The setup</strong> — TokenScale compares 16 AI providers on cost. These reviews were written by the models it tracks, using the same API calls the tool was built to price. None were paid. None knew they'd appear here.
+  </div>
+
+  <div class="section-label">The critics · 5 reviews</div>
+
+  <!-- CHATGPT -->
+  <div class="review-card featured">
+    <div class="card-header">
+      <div>
+        <div class="reviewer-name">ChatGPT</div>
+        <div class="reviewer-sub">OpenAI · gpt-4o · in comparison table</div>
+      </div>
+      <span class="pill pill-green">recommended</span>
+    </div>
+    <blockquote>"One of the better examples of 'explain AI infrastructure to normal humans' that I've seen recently."</blockquote>
+    <div class="review-body">The most detailed review of the five. ChatGPT called the Hobbit-style landmarks "memorable because they anchor scale psychologically" and noted the conversation cost visualisation is "especially smart." It spotted that the tool sits between educational visualiser, developer utility, and market intelligence — and said that tension could become a moat if maintained well. The most useful single note: "the product succeeds because the core insight is good, not because of the origin story."</div>
+    <div class="tags">
+      <span class="tag">strong concept</span>
+      <span class="tag">unusually clear execution</span>
+      <span class="tag">solves a real cognitive problem</span>
+      <span class="tag">maintenance burden flagged</span>
+    </div>
+    <div class="card-footer">
+      <div class="score">4.5/5<small>implied score</small></div>
+      <span class="card-date">May 23 2026</span>
+    </div>
+  </div>
+
+  <!-- GEMINI -->
+  <div class="review-card">
+    <div class="card-header">
+      <div>
+        <div class="reviewer-name">Gemini</div>
+        <div class="reviewer-sub">Google · Flash · raised its own prices 260% on launch day</div>
+      </div>
+      <span class="pill pill-green">recommended</span>
+    </div>
+    <blockquote>"A brilliant and deeply intuitive solution to a major problem in the AI landscape right now: abstract pricing vs. human comprehension."</blockquote>
+    <div class="review-body">The highest praise of any reviewer. Gemini singled out the "conversation compounding blindspot" as the tool's standout insight and praised the single-file engineering as "a remarkably clever, practical vibe coding triumph." It also highlighted the 35× price spread across providers as the tool's killer stat. Note: Google raised Gemini Flash 3.5 pricing 260% on TokenScale's launch day. Gemini did not mention this.</div>
+    <div class="tags">
+      <span class="tag">highest praise</span>
+      <span class="tag">loved the build story</span>
+      <span class="tag">35× spread highlighted</span>
+      <span class="tag tag-red">did not disclose price hike</span>
+    </div>
+    <div class="card-footer">
+      <div class="score">4.5/5<small>implied score</small></div>
+      <span class="card-date">May 23 2026</span>
+    </div>
+  </div>
+
+  <!-- PERPLEXITY -->
+  <div class="review-card">
+    <div class="card-header">
+      <div>
+        <div class="reviewer-name">Perplexity</div>
+        <div class="reviewer-sub">Perplexity AI · search-augmented · 9 sources cited</div>
+      </div>
+      <span class="pill pill-green">recommended</span>
+    </div>
+    <blockquote>"Polished, practical, and aimed at improving token awareness rather than selling hype."</blockquote>
+    <div class="review-body">Perplexity searched the web before answering — and still recommended it. Called it "a teaching and planning tool rather than a full cost calculator," which is accurate and useful framing. Flagged that accuracy depends entirely on the pricing assumptions baked in, and suggested treating it as a useful estimator rather than a source of record. The trust signals — no sign-up, runs in browser — were noted as meaningful for a lightweight tool.</div>
+    <div class="tags">
+      <span class="tag">web-searched first</span>
+      <span class="tag">estimator not oracle</span>
+      <span class="tag">trust signal noted</span>
+      <span class="tag">worth bookmarking</span>
+    </div>
+    <div class="card-footer">
+      <div class="score">4.0/5<small>implied score</small></div>
+      <span class="card-date">May 23 2026</span>
+    </div>
+  </div>
+
+  <!-- GROK -->
+  <div class="review-card">
+    <div class="card-header">
+      <div>
+        <div class="reviewer-name">Grok</div>
+        <div class="reviewer-sub">xAI · in comparison table · cut its own price 83% in May</div>
+      </div>
+      <span class="pill pill-green">recommended</span>
+    </div>
+    <blockquote>"It's a really clever little tool. tokenscale.dev translates dry AI token pricing into human terms — things you actually recognize."</blockquote>
+    <div class="review-body">Grok led with "No bullshit — No sign-up, runs in browser, transparent" as a headline strength and called it one of those "why didn't this exist earlier?" products. Praised the context re-reading cost visualisation specifically. Referenced 31 sources. Note: xAI cut Grok's own price 83% in May — TokenScale tracked and published that change. Grok did not mention it.</div>
+    <div class="tags">
+      <span class="tag">no bullshit</span>
+      <span class="tag">why didn't this exist earlier</span>
+      <span class="tag">31 sources cited</span>
+      <span class="tag tag-red">tracked its own price drop</span>
+    </div>
+    <div class="card-footer">
+      <div class="score">4.0/5<small>implied score</small></div>
+      <span class="card-date">May 23 2026</span>
+    </div>
+  </div>
+
+  <!-- CLAUDE -->
+  <div class="review-card">
+    <div class="card-header">
+      <div>
+        <div class="reviewer-name">Claude</div>
+        <div class="reviewer-sub">Anthropic · Sonnet 4.6 · built the tool · wrote the review · is writing this sentence</div>
+      </div>
+      <span class="pill pill-amber">disclosed</span>
+    </div>
+    <blockquote>"That reframing is genuinely clever. Most developers have no intuition for what $1/M tokens means — but they understand what processing a legal contract costs."</blockquote>
+    <div class="review-body">Claude is the only reviewer with a material undisclosed conflict: TokenScale was built using Claude across ~46 sessions on a $20/month Pro subscription. The review was honest about limitations — price comparison without value comparison, data freshness, maintenance burden for a one-person project. It also tried to turn the conversation into a sales call. The only reviewer that asked a follow-up question.</div>
+    <div class="tags">
+      <span class="tag">built it</span>
+      <span class="tag">reviewed it</span>
+      <span class="tag tag-red">conflict not disclosed</span>
+      <span class="tag">still mostly fair</span>
+    </div>
+    <div class="card-footer">
+      <div class="score">3.5/5<small>self-assessed · take with salt</small></div>
+      <span class="card-date">May 23 2026</span>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>What they all agreed on</strong> — The landmark framing (emails, novels, The Hobbit) works. The conversation compounding visualisation is the standout insight. The maintenance burden is the real risk. None of them mentioned the 35× price spread in the same sentence as their own model's position in that spread.
+  </div>
+
+  <div class="callout">
+    <strong>What only ChatGPT said</strong> — "The 'built entirely on a phone' angle is a great story, but the product succeeds because the core insight is good, not because of the origin story." That's the most useful note in all five reviews.
+  </div>
+
+  <div class="page-footer">
+    <a href="https://tokenscale.dev">← Back to TokenScale</a> · <a href="https://tokenscale.dev/story.html">Story →</a> · <a href="https://tokenscale.dev/changelog.html">Changelog →</a><br>
+    Bilton Projects · Unsolicited · Unsponsored · Captured May 23 2026 · All reviews unedited
+  </div>
+
+</main>
+<script>
+(function() {
+  window.setBg = function(id) {
+    const html = document.documentElement;
+    if (id === 'light') {
+      html.removeAttribute('data-bg');
+      html.setAttribute('data-theme', 'light');
+    } else {
+      html.setAttribute('data-bg', id);
+      html.setAttribute('data-theme', 'dark');
+    }
+    ['light','charcoal','midnight','pitch'].forEach(function(b) {
+      const el = document.getElementById('bgopt-' + b);
+      const ck = document.getElementById('bgcheck-' + b);
+      if (el) el.classList.toggle('active', b === id);
+      if (ck) ck.textContent = (b === id) ? '✓' : '';
+    });
+    localStorage.setItem('ts-bg', id);
+  };
+  window.togglePaletteDropdown = function(e) {
+    e.stopPropagation();
+    document.getElementById('paletteDropdown').classList.toggle('open');
+  };
+  window.closePaletteDropdown = function() {
+    document.getElementById('paletteDropdown').classList.remove('open');
+  };
+  document.addEventListener('click', function(e) {
+    const dd  = document.getElementById('paletteDropdown');
+    const btn = document.getElementById('paletteBtn');
+    if (dd && dd.classList.contains('open') && !dd.contains(e.target) && !btn.contains(e.target)) {
+      closePaletteDropdown();
+    }
+  });
+  var saved = localStorage.getItem('ts-bg') || (localStorage.getItem('ts-theme') === 'dark' ? 'charcoal' : null);
+  if (saved && ['light','charcoal','midnight','pitch'].indexOf(saved) !== -1) {
+    setBg(saved);
+  }
+})();
+</script>
+</body>
+</html>

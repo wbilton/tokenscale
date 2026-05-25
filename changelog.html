@@ -30,14 +30,39 @@ html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:'Lora',Georgia,serif;line-height:1.7;min-height:100vh;transition:background 0.3s,color 0.3s;}
 
 /* ── NAV ── */
-.topnav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
-.nav-brand{font-family:'Clash Display',Georgia,sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-0.03em;text-decoration:none;color:var(--text);}
-.nav-brand em{font-style:normal;color:var(--accent);}
+.topnav{display:flex;align-items:center;justify-content:space-between;padding:0.9rem 7rem 0.9rem 1.5rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
+.nav-back{font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:0.04em;transition:opacity 0.15s;}
+.nav-back:hover{opacity:0.7;}
 .nav-links{display:flex;align-items:center;gap:1.2rem;}
 .nav-link{font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;transition:color 0.15s;}
 .nav-link:hover,.nav-link.active{color:var(--accent);}
-.mode-toggle{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border-hi);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.8rem;color:var(--text-sub);transition:border-color 0.2s;}
-.mode-toggle:hover{border-color:var(--accent);}
+/* ── Data-bg overrides ── */
+[data-bg="charcoal"] { --bg:#1c1a18;--bg2:#252320;--card:#2c2a27;--border:#38352f;--border-hi:#46423b;--text:#f0ede8;--text-sub:#b8b0a6;--text-muted:#8a8278;--text-ghost:#504c47; }
+[data-bg="midnight"] { --bg:#0d1117;--bg2:#161b22;--card:#1c2128;--border:#262d36;--border-hi:#30383f;--text:#e6edf3;--text-sub:#8d96a0;--text-muted:#6e7680;--text-ghost:#3d444d; }
+[data-bg="pitch"]    { --bg:#0a0a0a;--bg2:#0f0f0f;--card:#141414;--border:#1e1e1e;--border-hi:#272727;--text:#ececec;--text-sub:#909090;--text-muted:#5a5a5a;--text-ghost:#333333; }
+/* ── Palette button ── */
+.palette-btn { position:fixed;top:0.85rem;right:0.9rem;z-index:200;background:var(--card);border:1.5px solid var(--border-hi);border-radius:10px;cursor:pointer;padding:0.35rem 0.55rem 0.3rem;display:flex;align-items:center;gap:0.4rem;transition:border-color 0.2s,background 0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.12);-webkit-tap-highlight-color:transparent; }
+.palette-btn:hover { border-color:var(--accent); }
+.palette-btn-dots { display:grid;grid-template-columns:1fr 1fr;gap:2px;width:14px;height:14px; }
+.palette-btn-dots span { border-radius:50%;width:5px;height:5px; }
+.palette-btn-label { font-family:'JetBrains Mono',monospace;font-size:0.42rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap; }
+/* ── Palette dropdown ── */
+.palette-dropdown { position:fixed;top:3.2rem;right:0.75rem;z-index:300;background:var(--card);border:1px solid var(--border-hi);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,0.18),0 2px 8px rgba(0,0,0,0.1);padding:0.7rem 0.6rem 0.6rem;width:198px;display:none;flex-direction:column;gap:0.3rem;animation:pdropIn 0.18s cubic-bezier(.34,1.56,.64,1); }
+.palette-dropdown.open { display:flex; }
+@keyframes pdropIn { from{opacity:0;transform:translateY(-6px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+.pd-close-btn { position:absolute;top:0.45rem;right:0.45rem;width:1.5rem;height:1.5rem;background:rgba(120,116,110,0.12);border:1px solid rgba(120,116,110,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:var(--text-muted);cursor:pointer;transition:background .15s;-webkit-tap-highlight-color:transparent;line-height:1; }
+.pd-close-btn:hover { background:rgba(120,116,110,0.24); }
+.palette-drop-label { font-family:'JetBrains Mono',monospace;font-size:0.44rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);padding:0.1rem 0.4rem 0.35rem;border-bottom:1px solid var(--border);margin-bottom:0.1rem;padding-right:1.8rem;transition:border-color 0.35s; }
+.bg-options { display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;padding:0.3rem 0.2rem 0.35rem; }
+.bg-option { display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:1px solid var(--border);border-radius:9px;padding:7px 4px 6px;cursor:pointer;position:relative;transition:border-color .2s,background .2s;-webkit-tap-highlight-color:transparent; }
+.bg-option:hover { border-color:var(--border-hi); }
+.bg-option.active { border-color:var(--accent);background:rgba(25,103,210,0.06); }
+[data-bg] .bg-option.active { background:rgba(255,255,255,0.08);border-color:var(--border-hi); }
+.bg-swatch { width:22px;height:22px;border-radius:6px;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,0.25); }
+.bg-label { font-family:'JetBrains Mono',monospace;font-size:0.36rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap; }
+.bg-option.active .bg-label { color:var(--text-sub); }
+.bg-check { position:absolute;top:3px;right:4px;font-size:0.48rem;color:var(--text);opacity:0;transition:opacity .15s; }
+.bg-option.active .bg-check { opacity:1; }
 
 /* ── LAYOUT ── */
 .page{max-width:640px;margin:0 auto;padding:0 1.5rem 6rem;}
@@ -107,15 +132,55 @@ body{background:var(--bg);color:var(--text);font-family:'Lora',Georgia,serif;lin
 .reveal{opacity:0;transform:translateY(14px);transition:opacity 0.5s ease,transform 0.5s ease;}
 .revealed{opacity:1;transform:none;}
 </style>
+<script>
+/* ── No-flash bg restore — runs before first paint ── */
+(function(){var b=localStorage.getItem('ts-bg');if(b&&['charcoal','midnight','pitch'].includes(b))document.documentElement.setAttribute('data-bg',b);})();
+</script>
 </head>
 <body>
 
+<button class="palette-btn" id="paletteBtn" onclick="togglePaletteDropdown(event)" title="Change background">
+  <div class="palette-btn-dots" id="paletteBtnDots">
+    <span style="background:#d4cfc8;"></span>
+    <span style="background:#1c1a18;"></span>
+    <span style="background:#0d1117;"></span>
+    <span style="background:#080808;"></span>
+  </div>
+  <span class="palette-btn-label">Palette</span>
+</button>
+<div class="palette-dropdown" id="paletteDropdown">
+  <button class="pd-close-btn" onclick="closePaletteDropdown()" title="Close">✕</button>
+  <div class="palette-drop-label">Background</div>
+  <div class="bg-options">
+    <button class="bg-option active" id="bgopt-light"    onclick="setBg('light')">
+      <div class="bg-swatch" style="background:#f0ede8;border:1px solid #d4cfc8;"></div>
+      <span class="bg-label">Light</span>
+      <span class="bg-check" id="bgcheck-light">✓</span>
+    </button>
+    <button class="bg-option" id="bgopt-charcoal" onclick="setBg('charcoal')">
+      <div class="bg-swatch" style="background:#1c1a18;"></div>
+      <span class="bg-label">Charcoal</span>
+      <span class="bg-check" id="bgcheck-charcoal"></span>
+    </button>
+    <button class="bg-option" id="bgopt-midnight" onclick="setBg('midnight')">
+      <div class="bg-swatch" style="background:#0d1117;"></div>
+      <span class="bg-label">Midnight</span>
+      <span class="bg-check" id="bgcheck-midnight"></span>
+    </button>
+    <button class="bg-option" id="bgopt-pitch"    onclick="setBg('pitch')">
+      <div class="bg-swatch" style="background:#080808;"></div>
+      <span class="bg-label">Pitch</span>
+      <span class="bg-check" id="bgcheck-pitch"></span>
+    </button>
+  </div>
+</div>
+
 <nav class="topnav">
-  <a href="index.html?dash=1" style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:0.04em;">← Back to TokenScale</a>
+  <a class="nav-back" href="index.html">← Back to TokenScale</a>
   <div class="nav-links">
     <a class="nav-link" href="story.html">Story</a>
+    <a class="nav-link" href="reviews.html">Reviews</a>
     <a class="nav-link active" href="changelog.html">Changelog</a>
-    <button class="mode-toggle" onclick="toggleMode()" title="Toggle dark mode">🌙</button>
   </div>
 </nav>
 
@@ -341,19 +406,51 @@ body{background:var(--bg);color:var(--text);font-family:'Lora',Georgia,serif;lin
 
 
   <footer class="footer">
-    <div><a href="index.html?dash=1" style="color:var(--accent);font-weight:700;">← Back to TokenScale</a></div>
-    <div><a href="index.html?dash=1">tokenscale.dev</a> · by <a href="https://linkedin.com/in/willbilton">Will Bilton</a> · Bilton Projects</div>
+    <div><a href="index.html" style="color:var(--accent);font-weight:700;">← Back to TokenScale</a></div>
+    <div><a href="https://tokenscale.dev">tokenscale.dev</a> · by <a href="https://linkedin.com/in/willbilton">Will Bilton</a> · Bilton Projects</div>
     <div>Pricing verified nightly · Free · No sign-up</div>
   </footer>
 
 </div>
 
 <script>
-function toggleMode(){
-  const h=document.documentElement;
-  h.dataset.theme=h.dataset.theme==='dark'?'light':'dark';
-  document.querySelector('.mode-toggle').textContent=h.dataset.theme==='dark'?'☀️':'🌙';
-}
+(function() {
+  window.setBg = function(id) {
+    const html = document.documentElement;
+    if (id === 'light') {
+      html.removeAttribute('data-bg');
+      html.setAttribute('data-theme', 'light');
+    } else {
+      html.setAttribute('data-bg', id);
+      html.setAttribute('data-theme', 'dark');
+    }
+    ['light','charcoal','midnight','pitch'].forEach(function(b) {
+      const el = document.getElementById('bgopt-' + b);
+      const ck = document.getElementById('bgcheck-' + b);
+      if (el) el.classList.toggle('active', b === id);
+      if (ck) ck.textContent = (b === id) ? '✓' : '';
+    });
+    localStorage.setItem('ts-bg', id);
+  };
+  window.togglePaletteDropdown = function(e) {
+    e.stopPropagation();
+    document.getElementById('paletteDropdown').classList.toggle('open');
+  };
+  window.closePaletteDropdown = function() {
+    document.getElementById('paletteDropdown').classList.remove('open');
+  };
+  document.addEventListener('click', function(e) {
+    const dd  = document.getElementById('paletteDropdown');
+    const btn = document.getElementById('paletteBtn');
+    if (dd && dd.classList.contains('open') && !dd.contains(e.target) && !btn.contains(e.target)) {
+      closePaletteDropdown();
+    }
+  });
+  var saved = localStorage.getItem('ts-bg') || (localStorage.getItem('ts-theme') === 'dark' ? 'charcoal' : null);
+  if (saved && ['light','charcoal','midnight','pitch'].indexOf(saved) !== -1) {
+    setBg(saved);
+  }
+})();
 const obs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');obs.unobserve(e.target);}});
 },{threshold:0.08});

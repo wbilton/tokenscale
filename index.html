@@ -5,7 +5,7 @@
 <!--
   TokenScale · price_change_log
   ──────────────────────────────
-  last verified : 2026-05-19
+  last verified : 2026-05-23
   changes       : DeepInfra Llama 3.1 8B (−64% input), Llama 3.3 70B (−57% input),
                   Anthropic Opus 4.6 → 4.7 (same price)
   next run      : nightly 20:00 local
@@ -15,7 +15,7 @@
 -->
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TokenScale · AI API pricing in real money · Bilton Projects</title>
 <meta name="description" content="See what AI API calls actually cost — in words you recognise. Compare 16 providers side by side. No sign-up. No guessing.">
 <meta property="og:type" content="website">
@@ -40,6 +40,124 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&family=DM+Serif+Display:ital@0;1&display=swap');
 @import url('https://api.fontshare.com/v2/css?f[]=clash-display@700,800&display=swap');
 
+/* ══ ENERGY GEM ══════════════════════════════════════════════ */
+
+.hero-stats { position: relative; }
+
+#energyGem {
+  position: absolute;
+  bottom: -1.0rem; right: -0.45rem;
+  width: 1.9rem; height: 1.9rem; min-width: 36px; min-height: 36px; border-radius: 50%;
+  background: var(--card, #faf8f5);
+  border: 1px solid var(--border-hi, #b8b2aa);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.95rem; cursor: pointer;
+  opacity: 0; transform: scale(0.7);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(.34,1.56,.64,1),
+              background 0.2s, box-shadow 0.2s;
+  z-index: 20; pointer-events: none; user-select: none;
+}
+#energyGem.gem-visible {
+  opacity: 1; transform: scale(1); pointer-events: auto;
+  background: rgba(34,197,94,0.13);
+  border-color: rgba(34,197,94,0.35);
+  box-shadow: 0 2px 8px rgba(34,197,94,0.15);
+}
+#energyGem.gem-on {
+  background: rgba(34,197,94,0.22);
+  border-color: rgba(34,197,94,0.55);
+  box-shadow: 0 2px 10px rgba(34,197,94,0.28);
+}
+#energyGem:hover  { transform: scale(1.08); box-shadow: 0 3px 14px rgba(34,197,94,0.35); }
+#energyGem:active { transform: scale(0.94); }
+
+@keyframes gemRevealPulse {
+  0%   { background: rgba(34,197,94,0.45); box-shadow: 0 0 0 0    rgba(34,197,94,0.70); }
+  40%  { background: rgba(34,197,94,0.30); box-shadow: 0 0 0 12px rgba(34,197,94,0.15); }
+  75%  { background: rgba(34,197,94,0.22); box-shadow: 0 0 0 18px rgba(34,197,94,0); }
+  100% { background: rgba(34,197,94,0.22); box-shadow: 0 2px 10px rgba(34,197,94,0.28); }
+}
+#energyGem.gem-pulse { animation: gemRevealPulse 1.8s cubic-bezier(.2,0,.4,1) forwards; }
+
+#energyPanel {
+  overflow: hidden; max-height: 0; opacity: 0; margin: 0;
+  transition: max-height 0.45s cubic-bezier(.4,0,.2,1), opacity 0.35s ease;
+}
+#energyPanel.ep-open { max-height: 24rem; opacity: 1; }
+
+.ep-slim {
+  display: flex; align-items: center; gap: 0.45rem;
+  padding: 0.48rem 1rem;
+  background: rgba(34,197,94,0.07);
+  border-top: 1px solid rgba(34,197,94,0.22);
+  cursor: pointer; transition: background 0.15s;
+}
+.ep-slim { border-bottom-left-radius: 11px; border-bottom-right-radius: 11px; }
+.ep-slim.ep-expanded { border-bottom: 1px solid rgba(34,197,94,0.10); border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.ep-slim:active { background: rgba(34,197,94,0.12); }
+.ep-bolt { font-size: 0.85rem; flex-shrink: 0; line-height: 1; }
+.ep-slim-val { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 700; color: #15803d; flex: 1; min-width: 0; line-height: 1.2; }
+.ep-slim-compare { font-family: 'Inter', sans-serif; font-size: 0.6rem; color: var(--d-text-sub); font-style: italic; display: block; margin-top: 0.08rem; }
+.ep-slim-carbon { font-family: 'JetBrains Mono', monospace; font-size: 0.52rem; color: #5a8a6a; text-align: right; flex-shrink: 0; }
+.ep-slim-carbon-lbl { font-size: 0.4rem; color: var(--d-text-muted); display: block; }
+.ep-chevron { font-size: 0.6rem; color: var(--d-text-muted); flex-shrink: 0; font-family: 'JetBrains Mono', monospace; line-height: 1; transition: transform 0.25s ease; display: inline-block; }
+.ep-slim.ep-expanded .ep-chevron { transform: rotate(90deg); }
+
+@keyframes explorePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.35); opacity: 0.85; }
+  55%       { box-shadow: 0 0 0 5px rgba(34,197,94,0); opacity: 1; }
+}
+.ep-explore-pill {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.46rem; font-weight: 700;
+  letter-spacing: 0.09em; text-transform: uppercase; color: #15803d;
+  background: rgba(34,197,94,0.10); border: 1px solid rgba(34,197,94,0.28);
+  border-radius: 20px; padding: 0.14rem 0.48rem; flex-shrink: 0;
+  animation: explorePulse 2.6s ease-in-out infinite;
+}
+.ep-slim.ep-expanded .ep-explore-pill { display: none; }
+:where(html[data-bg="charcoal"],html[data-bg="midnight"],html[data-bg="pitch"]) .ep-explore-pill {
+  color: #4ade80; background: rgba(34,197,94,0.08); border-color: rgba(34,197,94,0.20);
+}
+
+.ep-detail { overflow: hidden; max-height: 0; transition: max-height 0.35s cubic-bezier(.4,0,.2,1); background: rgba(34,197,94,0.04); border-top: 1px solid rgba(34,197,94,0.12); }
+.ep-detail.ep-detail-open { max-height: 20rem; }
+.ep-detail-inner { padding: 0.5rem 1rem 0.55rem; display: flex; flex-direction: column; gap: 0.38rem; }
+.ep-methodology { font-family: 'Inter', sans-serif; font-size: 0.53rem; color: var(--d-text-sub); line-height: 1.5; }
+.ep-methodology strong { color: var(--d-text); }
+.ep-controls { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.ep-toggle-label, .ep-persist-label { display: flex; align-items: center; gap: 0.22rem; font-family: 'Inter', sans-serif; font-size: 0.53rem; color: var(--d-text-sub); cursor: pointer; }
+.ep-persist-label { margin-left: auto; }
+.ep-toggle-label input, .ep-persist-label input { accent-color: #15803d; cursor: pointer; }
+.ep-persist-note { font-family: 'Inter', sans-serif; font-size: 0.47rem; color: var(--d-text-muted); font-style: italic; }
+
+/* Both sides strip */
+.ep-both-sides { display: none; padding: 0.3rem 1rem; background: rgba(34,197,94,0.04); border-top: 1px solid rgba(34,197,94,0.10); font-family: 'Inter', sans-serif; font-size: 0.5rem; line-height: 1.6; color: var(--d-text-sub); }
+#energyPanel.ep-open .ep-both-sides { display: block; }
+/* Last item in panel gets bottom border-radius to match card */
+.ep-both-sides { border-bottom-left-radius: 11px; border-bottom-right-radius: 11px; }
+/* When detail is open instead, it gets the radius */
+.ep-detail.ep-detail-open { border-bottom-left-radius: 11px; border-bottom-right-radius: 11px; }
+.ep-side-label { font-family: 'JetBrains Mono', monospace; font-size: 0.42rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--d-text-muted); margin-right: 0.3rem; }
+.ep-side-eff   { color: #15803d; }
+.ep-side-scale { color: var(--d-text-sub); }
+
+/* Topbar energy strip */
+.topbar-ep-row { display: flex; align-items: center; gap: 0.5rem; padding: 0 1rem; width: 100%; box-sizing: border-box; border-top: 1px solid rgba(34,197,94,0.18); background: rgba(34,197,94,0.05); max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.35s cubic-bezier(.16,1,.3,1), opacity 0.3s ease, padding 0.3s ease; }
+.topbar-ep-row.tep-visible { max-height: 36px; opacity: 1; padding-top: 0.3rem; padding-bottom: 0.32rem; }
+.topbar-ep-bolt { font-size: 0.75rem; flex-shrink: 0; line-height: 1; }
+.topbar-ep-val  { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; font-weight: 700; color: #15803d; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topbar-ep-compare { font-family: 'Inter', sans-serif; font-size: 0.48rem; color: var(--d-text-sub); font-style: italic; flex-shrink: 0; white-space: nowrap; }
+
+:where(html[data-bg="charcoal"],html[data-bg="midnight"],html[data-bg="pitch"]) .ep-slim,
+:where(html[data-bg="charcoal"],html[data-bg="midnight"],html[data-bg="pitch"]) .ep-detail,
+:where(html[data-bg="charcoal"],html[data-bg="midnight"],html[data-bg="pitch"]) .ep-both-sides { background: rgba(34,197,94,0.05); border-color: rgba(34,197,94,0.14); }
+:where(html[data-bg="charcoal"],html[data-bg="midnight"],html[data-bg="pitch"]) .ep-slim-val,
+:where(html[data-bg="charcoal"],html[data-bg="midnight"],html[data-bg="pitch"]) .topbar-ep-val,
+:where(html[data-bg="charcoal"],html[data-bg="midnight"],html[data-bg="pitch"]) .ep-side-eff { color: #4ade80; }
+:where(html[data-bg="charcoal"],html[data-bg="midnight"],html[data-bg="pitch"]) .topbar-ep-row { background: rgba(34,197,94,0.04); }
+
+/* ══ END ENERGY GEM ══ */
 /* ── VIEW SWITCHER ── */
 .view {
   position: fixed;
@@ -148,6 +266,91 @@ body {
   .page { max-width: 640px; }
 }
 
+/* ── REVIEWS BADGE + ANNOUNCEMENT STRIP ── */
+.reviews-badge {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  background: var(--panel-hi);
+  border: 1px solid var(--border-hi);
+  border-radius: 12px;
+  padding: 0.65rem 0.85rem 0.55rem;
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+.reviews-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.16);
+}
+.reviews-badge-score {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic;
+  font-size: 1.55rem;
+  line-height: 1;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.reviews-badge-stars {
+  font-size: 0.6rem;
+  color: #b89a3a;
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+.reviews-badge-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+.reviews-strip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0.5rem 2.5rem;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  position: relative;
+}
+.reviews-strip a {
+  color: var(--text-sub);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border-hi);
+  padding-bottom: 1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.reviews-strip a:hover { color: var(--text); border-color: var(--text); }
+.reviews-strip-close {
+  position: absolute;
+  right: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-ghost);
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0.2rem 0.3rem;
+  transition: color 0.15s;
+}
+.reviews-strip-close:hover { color: var(--text-muted); }
+
 /* ── TOP NAV ── */
 .nav {
   display: flex;
@@ -157,6 +360,24 @@ body {
   border-bottom: 1px solid var(--border);
   margin-bottom: 0;
 }
+/* ── Landing palette button — hidden by default, appears only when a dark bg is active ── */
+.landing-palette-btn {
+  position: fixed; top: 0.85rem; right: 0.9rem; z-index: 200;
+  display: none; /* hidden on light / fresh load */
+  align-items: center; gap: 0.4rem;
+  background: var(--card, #faf8f5); border: 1.5px solid var(--border-hi, #b8b2aa);
+  border-radius: 10px; cursor: pointer;
+  padding: 0.35rem 0.55rem 0.3rem;
+  transition: border-color 0.2s, background 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  -webkit-tap-highlight-color: transparent;
+}
+/* Revealed automatically whenever a dark bg is set (data-bg only exists for non-light values) */
+[data-bg] .landing-palette-btn { display: flex; }
+.landing-palette-btn:hover { border-color: var(--accent, #1967d2); }
+.landing-palette-btn .palette-btn-dots { display:grid;grid-template-columns:1fr 1fr;gap:2px;width:14px;height:14px; }
+.landing-palette-btn .palette-btn-dots span { border-radius:50%;width:5px;height:5px; }
+.landing-palette-btn .palette-btn-label { font-family:'JetBrains Mono',monospace;font-size:0.42rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap; }
 
 .nav-logo {
   display: flex;
@@ -1748,6 +1969,27 @@ html[data-bg="pitch"] #view-dashboard {
   --chrome-sub:  #333333;
 }
 
+/* ── Landing page dark-mode colour tokens ─────────────────────────
+   #view-landing uses --bg-land (not --bg) for its background, and
+   inherits --text/--border from :root. Override both here so the
+   landing view goes dark whenever a dark bg is active.
+   Setting vars on #view-landing beats any JS inline var on <html>. */
+html[data-bg="charcoal"] #view-landing {
+  --bg-land:#1c1a18; --card:#2c2a27; --border:#38352f; --border-hi:#46423b;
+  --text:#f0ede8; --text-sub:#b8b0a6; --text-muted:#7a7570; --text-ghost:#504c47;
+  --panel:#252320; --panel-hi:#2c2a27; --live-bg:#2c2a27; --live-border:#46423b;
+}
+html[data-bg="midnight"] #view-landing {
+  --bg-land:#0d1117; --card:#1c2128; --border:#262d36; --border-hi:#30383f;
+  --text:#e6edf3; --text-sub:#8d96a0; --text-muted:#6e7680; --text-ghost:#3d444d;
+  --panel:#161b22; --panel-hi:#1c2128; --live-bg:#1c2128; --live-border:#30383f;
+}
+html[data-bg="pitch"] #view-landing {
+  --bg-land:#0a0a0a; --card:#141414; --border:#1e1e1e; --border-hi:#272727;
+  --text:#ececec; --text-sub:#909090; --text-muted:#5a5a5a; --text-ghost:#333333;
+  --panel:#0f0f0f; --panel-hi:#141414; --live-bg:#141414; --live-border:#272727;
+}
+
 /* ── Dark mode: dim brightest foreground elements ──────────────────
    All three dark themes share identical rules — :is() keeps it DRY. */
 
@@ -2509,7 +2751,7 @@ html[data-model="opus"]   .hero-model-badge::before { background: var(--opus-bak
   border-right:1px solid var(--model-bd);
   border-bottom:1px solid var(--model-bd);
   border-radius:0 0 10px 10px;
-  overflow:hidden;
+  overflow:visible;
   position:relative;
   transition:background .4s ease;
 }
@@ -3493,6 +3735,9 @@ html[data-bg="pitch"]    #view-dashboard .htp-lite.htp-active {
   opacity:0; transform:translateX(100%); pointer-events:none; visibility:hidden;
   transition:opacity .35s cubic-bezier(.4,0,.2,1), transform .35s cubic-bezier(.4,0,.2,1), visibility 0s linear .35s;
 }
+#view-article {
+  z-index:301;
+}
 #view-learn.open, #view-article.open {
   opacity:1; transform:translateX(0); pointer-events:auto; visibility:visible;
   transition:opacity .35s cubic-bezier(.4,0,.2,1), transform .35s cubic-bezier(.4,0,.2,1), visibility 0s linear 0s;
@@ -3500,7 +3745,7 @@ html[data-bg="pitch"]    #view-dashboard .htp-lite.htp-active {
 .learn-topbar {
   position:sticky; top:0; z-index:10; background:var(--d-bg);
   border-bottom:1px solid var(--d-border); padding:.7rem 1rem;
-  display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:.5rem;
+  display:grid; grid-template-columns:36px 1fr 36px; align-items:center; gap:.5rem;
 }
 /* ── FLOATING LEARN BUTTON ── */
 .learn-fab {
@@ -3524,7 +3769,7 @@ html[data-bg="pitch"]    #view-dashboard .htp-lite.htp-active {
 .learn-fab.is-open {
   background: #B8860B;
   border-color: #B8860B;
-  box-shadow: 0 4px 20px rgba(37,99,235,.45), 0 1px 4px rgba(37,99,235,.3);
+  box-shadow: 0 4px 20px rgba(184,134,11,.40), 0 1px 4px rgba(184,134,11,.25);
   font-size: 1.05rem;
 }
 
@@ -3549,11 +3794,11 @@ html[data-bg="pitch"]    #view-dashboard .htp-lite.htp-active {
 .learn-grid { display:flex; flex-direction:column; gap:.5rem; }
 .learn-card {
   background:var(--d-panel); border:1px solid var(--d-border); border-radius:10px;
-  padding:.75rem .9rem; cursor:pointer; display:flex; align-items:flex-start; gap:.65rem;
+  padding:.75rem .9rem; cursor:pointer; display:flex; align-items:center; gap:.65rem;
   transition:background .15s; -webkit-tap-highlight-color:transparent;
 }
 .learn-card:active { background:var(--d-bg); }
-.learn-card-icon { font-size:1.3rem; flex-shrink:0; line-height:1; margin-top:.05rem; }
+.learn-card-icon { font-size:1.3rem; flex-shrink:0; line-height:1; }
 .learn-card-body { flex:1; min-width:0; }
 .learn-card-tag { font-size:.42rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--d-text-muted); font-family:'JetBrains Mono',monospace; margin-bottom:.12rem; }
 .learn-card-title { font-size:.72rem; font-weight:800; color:var(--d-text); margin-bottom:.18rem; font-family:'Clash Display','Inter',sans-serif; }
@@ -3631,7 +3876,52 @@ html[data-bg="pitch"]    #view-dashboard .htp-lite.htp-active {
 
 /* ══ FULL MARKET PANEL ══ */
 .fm-panel { background:var(--d-bg); border-top:1px solid var(--d-border); }
-.fm-tabs { display:flex; gap:1px; background:var(--d-border); border-bottom:1px solid var(--model-bd); }
+
+/* ── Price moves ticker — auto-computed from history diffs ── */
+.pm-strip {
+  overflow:hidden; position:relative; height:27px;
+  display:flex; align-items:center;
+  border-bottom:1px solid var(--d-border);
+  background:var(--d-bg);
+}
+.pm-strip::after {
+  content:''; position:absolute; right:0; top:0; bottom:0; width:40px;
+  background:linear-gradient(to left, var(--d-bg), transparent);
+  pointer-events:none; z-index:2;
+}
+.pm-label {
+  position:absolute; left:0; z-index:3;
+  background:var(--d-bg); padding:0 8px 0 10px;
+  height:100%; display:flex; align-items:center;
+  border-right:1px solid var(--d-border);
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.58rem; font-weight:700;
+  letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--d-text-muted); gap:5px; white-space:nowrap;
+}
+.pm-label-dot {
+  width:5px; height:5px; border-radius:50%; background:currentColor;
+  animation:pmPulse 2s ease infinite; flex-shrink:0;
+}
+@keyframes pmPulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.pm-track-wrap { overflow:hidden; margin-left:74px; flex:1; }
+.pm-track {
+  display:flex; width:max-content;
+  animation:pmScroll 40s linear infinite;
+}
+.pm-track:hover { animation-play-state:paused; }
+@keyframes pmScroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.pm-item {
+  display:inline-flex; align-items:center; gap:4px;
+  padding:0 14px; font-family:'JetBrains Mono',monospace;
+  font-size:0.63rem; font-weight:700;
+  border-right:1px solid var(--d-border); white-space:nowrap; height:27px;
+}
+.pm-item .pm-who { color:var(--d-text-sub); font-weight:600; }
+.pm-item.pm-rise { color:#b45309; } /* amber — more expensive = bad */
+.pm-item.pm-drop { color:#15803d; } /* green — cheaper = good */
+.fm-tabs { display:flex; gap:1px; background:var(--d-border); border-bottom:1px solid var(--model-bd);
+  position:sticky; top:var(--topbar-h, 0px); z-index:50; }
 .fm-tab {
   flex:1; padding:.55rem .3rem; background:var(--model-bg); border:none;
   font-family:'JetBrains Mono',monospace; font-size:.36rem; font-weight:700;
@@ -3987,6 +4277,21 @@ html[data-model="opus"]   .fm-thead-controls th { border-color: var(--tier-o-sol
   background: rgba(255,251,235,0.55); /* warm parchment — signals read-only archive */
   cursor: default;
 }
+.hist-log-scroll {
+  max-height: 10.5rem; /* ~3.5 items visible — scroll for the rest */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+/* Flag: stands out from standard rise/drop — used for landmark events */
+.hist-log-item.hist-flag { background: rgba(26,115,232,0.09); border-left: 3px solid rgba(26,115,232,0.6); }
+.hist-log-context {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.40rem; font-style: italic;
+  color: var(--d-text-muted);
+  padding: 0.22rem 0.75rem 0.3rem 1.15rem;
+  background: rgba(26,115,232,0.04);
+  border-top: 1px solid rgba(26,115,232,0.10);
+}
 /* Dark backgrounds: use a muted charcoal tint instead of parchment */
 :where(html[data-bg="charcoal"],html[data-bg="midnight"],html[data-bg="pitch"]) .hist-changelog {
   background: rgba(255,255,255,0.04);
@@ -4033,6 +4338,35 @@ html[data-model="opus"]   .fm-thead-controls th { border-color: var(--tier-o-sol
   background: rgba(245,235,180,0.18);
 }
 .hist-table-wrap { margin-top: 0.25rem; overflow-x: auto; }
+
+/* ─── FM Section Banner — animated title on each tab switch ──────────── */
+#fmSectionBanner {
+  padding: 0.55rem 0.85rem 0.1rem;
+  overflow: hidden;
+  transition: padding 0.4s ease;
+}
+#fmSectionBanner.banner-static { padding: 0; }
+.fm-banner-anim { display: block; }
+.fm-banner-anim svg { display: block; width: 100%; height: auto; }
+.fm-banner-static-head {
+  display: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.43rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--d-text-muted); opacity: 0.7;
+  padding: 0.22rem 0.85rem;
+  border-bottom: 1px solid var(--d-border);
+  text-align: center;
+}
+#fmSectionBanner.banner-static .fm-banner-anim  { display: none; }
+#fmSectionBanner.banner-static .fm-banner-static-head { display: block; }
+/* Tier pills glow-ring — fires when By Name animates in */
+@keyframes fnTierFlash {
+  0%,100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+  30%     { box-shadow: 0 0 0 4px rgba(59,130,246,0.55); }
+  70%     { box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
+}
+.fm-tier-pills.fn-flash { animation: fnTierFlash 0.75s ease 0s 2; border-radius: 4px; }
 
 /* ── Price history tab: full parchment wash — signals read-only archive ── */
 #fmTabChart {
@@ -4100,8 +4434,7 @@ html[data-model="opus"]   .fm-thead-controls th { border-color: var(--tier-o-sol
   bottom: auto;
   z-index: 50;
 }
-/* Internal tab bar is now redundant — topbar quick-nav handles navigation */
-.fm-tabs { display: none !important; }
+/* Tab bar is below the banner and sticks under topbar on scroll — see .fm-tabs in FULL MARKET section */
 
 /* ── Topbar conversation-turns slider (row 4 — appears when hero slider off-screen) ── */
 .topbar-ts-row {
@@ -6321,12 +6654,22 @@ html[data-model="opus"]   .msb-cta { background: var(--opus-baked); }
   -webkit-tap-highlight-color: transparent;
 }
 .tok-done-btn:active { opacity: 0.8; transform: scale(0.96); }
+.tok-textarea-wrap {
+  display: flex; align-items: flex-start;
+  padding: 0.7rem 0.8rem;
+  border-bottom: 1px solid var(--d-border);
+}
+.tok-textarea-bolt {
+  font-size: 0.95rem; line-height: 1.5;
+  color: rgba(34,197,94,0.7);
+  flex-shrink: 0; margin-right: 0.3rem;
+  pointer-events: none; user-select: none;
+}
 .tok-textarea {
   width:100%; min-height:90px; max-height:200px;
-  padding:0.7rem 0.8rem; border:none; outline:none; resize:vertical;
+  padding:0; border:none; outline:none; resize:vertical;
   font-family:'Inter',sans-serif; font-size:0.75rem; line-height:1.6;
-  color:var(--d-text); background:var(--d-panel);
-  border-bottom:1px solid var(--d-border);
+  color:var(--d-text); background:transparent;
 }
 .tok-textarea::placeholder { color:var(--text-faint); }
 .tok-live-stats {
@@ -7592,7 +7935,7 @@ html[data-bg="pitch"] #view-dashboard[data-dormant] .upper-zone::after {
   margin: 0.6rem 1rem 0;
   border: 1px solid var(--d-border);
   border-radius: 12px;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: var(--shadow, 0 2px 12px rgba(0,0,0,0.06));
   padding-bottom: 0;
 }
@@ -8355,8 +8698,48 @@ html[data-model="opus"]   .summary-panel.compare-open .summary-half {
 .hist-tap-hint { font-family:'JetBrains Mono',monospace; font-size:0.4rem; color:var(--accent); opacity:0.55; text-align:center; margin-top:0.5rem; letter-spacing:0.04em; }
 
 </style>
+<script>
+/* ── No-flash bg restore — runs before first paint ── */
+(function(){var b=localStorage.getItem('ts-bg');if(b&&['charcoal','midnight','pitch'].includes(b))document.documentElement.setAttribute('data-bg',b);})();
+</script>
 </head>
 <body>
+
+<!-- ══ PALETTE DROPDOWN — global, lives outside both views ══ -->
+<div class="palette-dropdown" id="paletteDropdown">
+  <button class="pd-close-btn" onclick="closePaletteDropdown()" title="Close">✕</button>
+  <div class="bg-section">
+    <div class="palette-drop-label">Background</div>
+    <div class="bg-options">
+      <button class="bg-option active" id="bgopt-light"    onclick="setBg('light')">
+        <div class="bg-swatch" style="background:#f8f7f4; border:1px solid #d5d0c8;"></div>
+        <span class="bg-label">Light</span>
+        <span class="bg-check" id="bgcheck-light">✓</span>
+      </button>
+      <button class="bg-option" id="bgopt-charcoal" onclick="setBg('charcoal')">
+        <div class="bg-swatch" style="background:#1c1a18;"></div>
+        <span class="bg-label">Charcoal</span>
+        <span class="bg-check" id="bgcheck-charcoal"></span>
+      </button>
+      <button class="bg-option" id="bgopt-midnight" onclick="setBg('midnight')">
+        <div class="bg-swatch" style="background:#0d1117;"></div>
+        <span class="bg-label">Midnight</span>
+        <span class="bg-check" id="bgcheck-midnight"></span>
+      </button>
+      <button class="bg-option" id="bgopt-pitch"    onclick="setBg('pitch')">
+        <div class="bg-swatch" style="background:#080808;"></div>
+        <span class="bg-label">Pitch</span>
+        <span class="bg-check" id="bgcheck-pitch"></span>
+      </button>
+    </div>
+  </div>
+  <div class="palette-drop-label" style="margin-top:.6rem"><span>Mood override</span></div>
+  <div class="mood-options" id="moodOptions">
+    <button class="mood-option active" id="moodopt-auto"    onclick="setMood('auto')">Auto</button>
+    <button class="mood-option"        id="moodopt-muted"   onclick="setMood('muted')">Muted</button>
+    <button class="mood-option"        id="moodopt-classic" onclick="setMood('classic')">Classic</button>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════════════════════════════ -->
 <!-- LANDING PAGE VIEW                                          -->
@@ -8364,6 +8747,12 @@ html[data-model="opus"]   .summary-panel.compare-open .summary-half {
 <div id="view-landing" class="view">
 
 <div class="page">
+
+  <!-- ANNOUNCEMENT STRIP -->
+  <div class="reviews-strip" id="reviewsStrip">
+    The models we compare reviewed us — May 23rd. <a href="reviews.html">Five opinions, zero payments →</a>
+    <button class="reviews-strip-close" onclick="dismissStrip()" aria-label="Dismiss">×</button>
+  </div>
 
   <!-- NAV -->
   <nav class="nav">
@@ -8377,6 +8766,16 @@ html[data-model="opus"]   .summary-panel.compare-open .summary-half {
       <select class="landing-provider-select" id="landingProviderSelect" onchange="landingSwitchProvider(this.value)"></select>
     </div>
   </nav>
+  <!-- Landing palette button — fixed top-right, same as sub-pages -->
+  <button class="landing-palette-btn" id="landingPaletteBtn" onclick="togglePaletteDropdown(event)" title="Change background">
+    <div class="palette-btn-dots">
+      <span style="background:#d4cfc8;"></span>
+      <span style="background:#1c1a18;"></span>
+      <span style="background:#0d1117;"></span>
+      <span style="background:#080808;"></span>
+    </div>
+    <span class="palette-btn-label">Palette</span>
+  </button>
 
   <!-- HERO -->
   <section class="hero">
@@ -8577,6 +8976,11 @@ html[data-model="opus"]   .summary-panel.compare-open .summary-half {
   </footer>
 
 </div>
+<a href="reviews.html" class="reviews-badge" title="AI critics reviewed TokenScale">
+  <span class="reviews-badge-score">4.1</span>
+  <span class="reviews-badge-stars">★★★★☆</span>
+  <span class="reviews-badge-label">AI Critics</span>
+</a>
 </div><!-- /view-landing -->
 
 <!-- ══════════════════════════════════════════════════════════ -->
@@ -8584,52 +8988,6 @@ html[data-model="opus"]   .summary-panel.compare-open .summary-half {
 <!-- ══════════════════════════════════════════════════════════ -->
 <div id="view-dashboard" class="view" data-dormant>
 <div class="app">
-
-<!-- PALETTE DROPDOWN (outside topbar, fixed positioned) -->
-<div class="palette-dropdown" id="paletteDropdown">
-
-  <button class="pd-close-btn" onclick="closePaletteDropdown()" title="Close">✕</button>
-
-  <!-- BG section always at top -->
-  <div class="bg-section">
-    <div class="palette-drop-label">Background</div>
-    <div class="bg-options">
-      <button class="bg-option active" id="bgopt-light"    onclick="setBg('light')">
-        <div class="bg-swatch" style="background:#f8f7f4; border:1px solid #d5d0c8;"></div>
-        <span class="bg-label">Light</span>
-        <span class="bg-check" id="bgcheck-light">✓</span>
-      </button>
-      <button class="bg-option" id="bgopt-charcoal" onclick="setBg('charcoal')">
-        <div class="bg-swatch" style="background:#1c1a18;"></div>
-        <span class="bg-label">Charcoal</span>
-        <span class="bg-check" id="bgcheck-charcoal"></span>
-      </button>
-      <button class="bg-option" id="bgopt-midnight" onclick="setBg('midnight')">
-        <div class="bg-swatch" style="background:#0d1117;"></div>
-        <span class="bg-label">Midnight</span>
-        <span class="bg-check" id="bgcheck-midnight"></span>
-      </button>
-      <button class="bg-option" id="bgopt-pitch"    onclick="setBg('pitch')">
-        <div class="bg-swatch" style="background:#080808;"></div>
-        <span class="bg-label">Pitch</span>
-        <span class="bg-check" id="bgcheck-pitch"></span>
-      </button>
-    </div>
-  </div>
-
-  <!-- MOOD override section -->
-  <div class="palette-drop-label" style="margin-top:.6rem">
-    <span>Mood override</span>
-  </div>
-  <div class="mood-options" id="moodOptions">
-    <button class="mood-option active" id="moodopt-auto"    onclick="setMood('auto')">Auto</button>
-    <button class="mood-option"        id="moodopt-muted"   onclick="setMood('muted')">Muted</button>
-    <button class="mood-option"        id="moodopt-classic" onclick="setMood('classic')">Classic</button>
-  </div>
-
-  <!-- ── end palette dropdown ── -->
-
-</div>
 
 <!-- TOPBAR -->
 <div class="topbar">
@@ -8664,7 +9022,7 @@ html[data-model="opus"]   .summary-panel.compare-open .summary-half {
   </div>
   <!-- Row 3: Quick-nav shortcuts -->
   <div class="topbar-quicknav" id="topbarQuicknav">
-    <button class="qn-btn" id="qnByname"   onclick="jumpToFmTab('byname')"><span class="qn-icon">🔤</span> All providers</button>
+    <button class="qn-btn" id="qnByname"   onclick="jumpToFmTab('byname')"><span class="qn-icon">Aa</span> All providers</button>
     <button class="qn-btn" id="qnCheapest" onclick="jumpToFmTab('cheapest')"><span class="qn-icon">↓</span> Lowest rate</button>
     <button class="qn-btn" id="qnBycat"    onclick="jumpToFmTab('bycat')"><span class="qn-icon">📊</span> By category</button>
     <button class="qn-btn" id="qnChart"    onclick="jumpToFmTab('chart')"><span class="qn-icon">📈</span> Price history</button>
@@ -8674,6 +9032,12 @@ html[data-model="opus"]   .summary-panel.compare-open .summary-half {
     <span class="topbar-ts-icon" id="topbarTsIcon">💬</span>
     <input type="range" class="topbar-ts-slider" id="topbarTsSlider" min="0" max="100" step="1" value="0">
     <span class="topbar-ts-val" id="topbarTsVal">—</span>
+  </div>
+  <!-- Row 5: Energy strip — docks when "Keep energy on" is active + scrolled -->
+  <div class="topbar-ep-row" id="topbarEpRow">
+    <span class="topbar-ep-bolt">&#x26A1;</span>
+    <span class="topbar-ep-val" id="topbarEpVal">—</span>
+    <span class="topbar-ep-compare" id="topbarEpCompare"></span>
   </div>
 </div>
 
@@ -8763,7 +9127,45 @@ html[data-model="opus"]   .summary-panel.compare-open .summary-half {
       <div class="hs-row-lbl">= total</div>
       <div class="hs-row-badge">&nbsp;</div>
     </div>
+    <!-- Energy gem — inside hero-stats so it positions relative to the bar -->
+    <button id="energyGem" onclick="toggleEnergyPanel()" title="Energy lens &#x2014; tap to explore">&#x26A1;</button>
   </div>
+
+  <div id="energyPanel">
+    <div class="ep-slim" id="epSlim" onclick="toggleEpDetail()">
+      <span class="ep-bolt">&#x26A1;</span>
+      <div class="ep-slim-val" id="epVal">
+        <span id="epValText">&#x2014; set a word count above</span>
+        <span class="ep-slim-compare" id="epCompare"></span>
+        <span class="ep-slim-compare" id="epContextNote" style="display:none;color:rgba(21,128,61,0.85);font-style:normal;font-size:0.6rem;font-weight:600;letter-spacing:0.01em;"></span>
+      </div>
+      <div class="ep-slim-carbon" id="epCarbonCell" style="display:none">
+        <span id="epCarbonVal">&#x2014;</span>
+        <span class="ep-slim-carbon-lbl">gCO2e</span>
+      </div>
+      <span class="ep-explore-pill" id="epExplorePill">explore</span>
+      <span class="ep-chevron" id="epChevron">&#x203A;</span>
+    </div>
+    <div class="ep-detail" id="epDetail">
+      <div class="ep-detail-inner">
+        <div class="ep-methodology">
+          Estimated from token count, split ~80% input&thinsp;/&thinsp;20% output &mdash; output decode uses ~3&ndash;5&times; more energy per token than input prefill (Luccioni et al. 2023). Output-heavy tasks (code generation, long-form writing) may use up to 2&times; more than shown.<br>
+          <strong>Lite ~0.0001&thinsp;/&thinsp;0.0004 &nbsp;&middot;&nbsp; Mid ~0.0003&thinsp;/&thinsp;0.0012 &nbsp;&middot;&nbsp; Pro ~0.0008&thinsp;/&thinsp;0.0035 Wh per 1K in&thinsp;/&thinsp;out tokens.</strong><br>
+          MoE models (DeepSeek, some open-hosted) adjusted to ~30% of dense equivalent (DeepSeek-V3 report 2024). Range is an <em>illustrative band</em>, not a confidence interval &mdash; reflects hardware generation, PUE 1.1&ndash;1.6, and batch size (IEA 2024). Carbon uses provider-specific grid mix (IEA 2023): DeepSeek ~580, US providers ~380, global fallback 436 gCO2/kWh. <em>The idea started watching a kettle boil &mdash; one litre takes ~0.1 kWh, enough for 30&ndash;300 queries like this.</em>
+        </div>
+        <div class="ep-controls">
+          <label class="ep-toggle-label"><input type="checkbox" id="epCarbonCheck" onchange="toggleEpCarbon(this.checked)"> Show CO2</label>
+          <label class="ep-persist-label"><input type="checkbox" id="epPersistCheck" onchange="toggleEpPersist(this.checked)"> Keep energy on</label>
+        </div>
+        <div class="ep-persist-note" id="epPersistNote" style="display:none">&#x26A1; Stays on when you return &middot; locks to topbar when scrolling &middot; stored in your browser only.</div>
+      </div>
+    </div>
+    <div class="ep-both-sides" id="epBothSides">
+      <div class="ep-side-eff"><span class="ep-side-label">Query</span><span id="epSideEff">&#x2014;</span></div>
+      <div class="ep-side-scale"><span class="ep-side-label">Kettle Index</span><span id="epSideScale">&#x2014;</span></div>
+    </div>
+  </div>
+
   <!-- Done pill — appears when token cell is being edited -->
   <div class="hs-done-wrap" id="hsDoneWrap">
     <div class="hs-done-inner">
@@ -8785,8 +9187,8 @@ html[data-model="opus"]   .summary-panel.compare-open .summary-half {
 <!-- ═══ TEXT TOKENISER ═══ -->
 <div class="tok-wrap" id="tokWrap">
   <div class="tok-field" id="tokPill" onclick="openTok()" role="button" tabindex="0">
-    <span class="tok-field-eyebrow">Live Token Counter</span>
-    <span class="tok-field-placeholder">paste or type to count tokens &amp; cost</span>
+    <span class="tok-field-eyebrow">⚡ Live Token Counter</span>
+    <span class="tok-field-placeholder">⚡ paste or type to count tokens &amp; cost</span>
   </div>
   <!-- Thumbnail: text hidden, only counts shown -->
   <div class="tok-thumb" id="tokThumb" style="display:none">
@@ -8808,12 +9210,15 @@ html[data-model="opus"]   .summary-panel.compare-open .summary-half {
   <!-- Expanded: textarea + live stats -->
   <div class="tok-expanded" id="tokExpanded" style="display:none">
     <div class="tok-header">
-      <span class="tok-header-label">Live Token Counter</span>
+      <span class="tok-header-label">⚡ Live Token Counter</span>
       <div class="tok-header-actions">
         <button class="tok-done-btn" onclick="closeTok()">Done ✓</button>
       </div>
     </div>
-    <textarea class="tok-textarea" id="tokTextarea" placeholder="Paste any text — we'll count the tokens and cost instantly. Try a sentence, a paragraph, or a whole document." oninput="countTok()"></textarea>
+    <div class="tok-textarea-wrap">
+      <span class="tok-textarea-bolt">⚡</span>
+      <textarea class="tok-textarea" id="tokTextarea" placeholder="Paste any text — we'll count the tokens and cost instantly. Try a sentence, a paragraph, or a whole document." oninput="countTok()"></textarea>
+    </div>
     <div class="tok-live-stats" id="tokLiveStats">
       <div class="tok-stat-cell">
         <div class="tok-stat-val" id="tsChars">0</div>
@@ -9034,6 +9439,38 @@ html[data-model="opus"]   .summary-panel.compare-open .summary-half {
   <!-- ══ FULL MARKET PANEL — lazy rendered ══ -->
   <div class="fm-panel" id="fmPanel" style="display:none">
 
+    <!-- Price moves ticker — auto-computed from history diffs, hidden until data exists -->
+    <div class="pm-strip" id="pmStrip" style="display:none">
+      <div class="pm-label">
+        <span class="pm-label-dot"></span>
+        MOVES
+      </div>
+      <div class="pm-track-wrap">
+        <div class="pm-track" id="pmTrack"></div>
+      </div>
+    </div>
+
+    <!-- Sticky slider — hidden; topbar slider handles this now -->
+    <div class="fm-mini-slider-wrap" id="fmMiniSliderWrap" style="display:none">
+      <span class="fm-mini-slider-icon" id="fmMiniSliderIcon">💬</span>
+      <input type="range" class="fm-mini-slider" id="fmMiniSlider" min="0" max="100" step="1" value="0">
+      <span class="fm-mini-slider-val" id="fmMiniSliderVal">—</span>
+    </div>
+
+    <!-- Section banner: animated SVG title on each tab switch -->
+    <div id="fmSectionBanner">
+      <div class="fm-banner-anim" id="fmBannerSvgWrap"></div>
+      <div class="fm-banner-static-head" id="fmBannerStaticHead"></div>
+    </div>
+
+    <!-- Tab bar — sits below banner, sticks under topbar when scrolled -->
+    <div class="fm-tabs">
+      <button class="fm-tab active" data-tab="byname"   onclick="switchFmTab('byname',this)">Aa By name</button>
+      <button class="fm-tab" data-tab="cheapest" onclick="switchFmTab('cheapest',this)">↓ Lowest rate</button>
+      <button class="fm-tab" data-tab="bycat"    onclick="switchFmTab('bycat',this)">📊 By category</button>
+      <button class="fm-tab" data-tab="chart"    onclick="switchFmTab('chart',this)">📈 Price history</button>
+    </div>
+
     <!-- Sort hint tooltip — shown first visit, dismissible -->
     <div id="fmSortHintWrap" style="padding: 0.65rem 0.85rem 0.5rem;">
       <div class="fm-compare-tooltip fm-ctt-animate" id="fmSortHint" style="display:flex; margin-bottom:0;">
@@ -9049,21 +9486,6 @@ html[data-model="opus"]   .summary-panel.compare-open .summary-half {
         </div>
         <button class="fm-ctt-dismiss" onclick="dismissSortHint()">Got it ✓</button>
       </div>
-    </div>
-
-    <!-- Tab bar -->
-    <div class="fm-tabs">
-      <button class="fm-tab active" data-tab="byname"   onclick="switchFmTab('byname',this)">🔤 By name</button>
-      <button class="fm-tab" data-tab="cheapest" onclick="switchFmTab('cheapest',this)">↓ Lowest rate</button>
-      <button class="fm-tab" data-tab="bycat"    onclick="switchFmTab('bycat',this)">📊 By category</button>
-      <button class="fm-tab" data-tab="chart"    onclick="switchFmTab('chart',this)">📈 Price history</button>
-    </div>
-
-    <!-- Sticky slider — hidden; topbar slider handles this now -->
-    <div class="fm-mini-slider-wrap" id="fmMiniSliderWrap" style="display:none">
-      <span class="fm-mini-slider-icon" id="fmMiniSliderIcon">💬</span>
-      <input type="range" class="fm-mini-slider" id="fmMiniSlider" min="0" max="100" step="1" value="0">
-      <span class="fm-mini-slider-val" id="fmMiniSliderVal">—</span>
     </div>
 
     <!-- Compare tooltip — visible until dismissed, shown above all tab content -->
@@ -9165,50 +9587,60 @@ html[data-model="opus"]   .summary-panel.compare-open .summary-half {
 
       <!-- Changelog — notable price events -->
       <div class="hist-changelog">
-        <div class="hist-log-head">Notable price changes</div>
-        <div class="hist-log-item hist-drop">
-          <span class="hist-log-date">May 2026</span>
-          <span class="hist-log-prov">OpenAI</span>
-          <span class="hist-log-model">o3 (Pro)</span>
-          <span class="hist-log-change" style="white-space:nowrap">$10→$2 in · $40→$8 out</span>
-          <span class="hist-log-badge drop">−80%</span>
+        <div class="hist-log-head">Notable price changes · latest first</div>
+        <div class="hist-log-scroll">
+          <div class="hist-log-item hist-flag hist-rise">
+            <span class="hist-log-date">May 20</span>
+            <span class="hist-log-prov">Google Gemini</span>
+            <span class="hist-log-model">Mid (Flash 3.5)</span>
+            <span class="hist-log-change" style="white-space:nowrap">$0.30→$1.50 in · $2.50→$9.00 out</span>
+            <span class="hist-log-badge rise">+260%</span>
+          </div>
+          <div class="hist-log-context">↑ Google's flagship mid-tier — the model behind The Hobbit Index. Alone among all 16 providers, Gemini raised its affordable tier price significantly this month while others cut or held.</div>
+          <div class="hist-log-item hist-drop">
+            <span class="hist-log-date">May 15</span>
+            <span class="hist-log-prov">xAI Grok</span>
+            <span class="hist-log-model">Mid (4.x→4.3)</span>
+            <span class="hist-log-change" style="white-space:nowrap">$3.00→$1.25 in · $15→$2.50 out</span>
+            <span class="hist-log-badge drop">−83%</span>
+          </div>
+          <div class="hist-log-item hist-drop">
+            <span class="hist-log-date">May 15</span>
+            <span class="hist-log-prov">DeepSeek</span>
+            <span class="hist-log-model">Mid (V3→V4)</span>
+            <span class="hist-log-change" style="white-space:nowrap">$0.27→$0.14 in · $1.10→$0.28 out</span>
+            <span class="hist-log-badge drop">−75%</span>
+          </div>
+          <div class="hist-log-item hist-rise">
+            <span class="hist-log-date">May 15</span>
+            <span class="hist-log-prov">Google Gemini</span>
+            <span class="hist-log-model">Pro (2.5→3.1)</span>
+            <span class="hist-log-change" style="white-space:nowrap">$1.25→$2.00 in · $10→$12 out</span>
+            <span class="hist-log-badge rise">+60%</span>
+          </div>
+          <div class="hist-log-item hist-rise">
+            <span class="hist-log-date">May 15</span>
+            <span class="hist-log-prov">OpenAI</span>
+            <span class="hist-log-model">Pro (GPT-5.5 launch)</span>
+            <span class="hist-log-change" style="white-space:nowrap">$2→$5 in · $8→$30 out</span>
+            <span class="hist-log-badge rise">+275%</span>
+          </div>
+          <div class="hist-log-item hist-rise">
+            <span class="hist-log-date">May 15</span>
+            <span class="hist-log-prov">OpenAI</span>
+            <span class="hist-log-model">Lite (new model)</span>
+            <span class="hist-log-change" style="white-space:nowrap">GPT-4o mini → GPT-5.4 mini</span>
+            <span class="hist-log-badge rise">+400%</span>
+          </div>
+          <div class="hist-log-item hist-drop">
+            <span class="hist-log-date">May 2026</span>
+            <span class="hist-log-prov">OpenAI</span>
+            <span class="hist-log-model">o3 (Pro)</span>
+            <span class="hist-log-change" style="white-space:nowrap">$10→$2 in · $40→$8 out</span>
+            <span class="hist-log-badge drop">−80%</span>
+          </div>
         </div>
-        <div class="hist-log-item hist-rise">
-          <span class="hist-log-date">May 15</span>
-          <span class="hist-log-prov">OpenAI</span>
-          <span class="hist-log-model">Lite (new model)</span>
-          <span class="hist-log-change" style="white-space:nowrap">GPT-4o mini → GPT-5.4 mini</span>
-          <span class="hist-log-badge rise">+400%</span>
-        </div>
-        <div class="hist-log-item hist-rise">
-          <span class="hist-log-date">May 15</span>
-          <span class="hist-log-prov">OpenAI</span>
-          <span class="hist-log-model">Pro (GPT-5.5 launch)</span>
-          <span class="hist-log-change" style="white-space:nowrap">$2→$5 in · $8→$30 out</span>
-          <span class="hist-log-badge rise">+275%</span>
-        </div>
-        <div class="hist-log-item hist-drop">
-          <span class="hist-log-date">May 15</span>
-          <span class="hist-log-prov">DeepSeek</span>
-          <span class="hist-log-model">Mid (V3→V4)</span>
-          <span class="hist-log-change" style="white-space:nowrap">$0.27→$0.14 in · $1.10→$0.28 out</span>
-          <span class="hist-log-badge drop">−75%</span>
-        </div>
-        <div class="hist-log-item hist-rise">
-          <span class="hist-log-date">May 15</span>
-          <span class="hist-log-prov">Google Gemini</span>
-          <span class="hist-log-model">Pro (2.5→3.1)</span>
-          <span class="hist-log-change" style="white-space:nowrap">$1.25→$2.00 in · $10→$12 out</span>
-          <span class="hist-log-badge rise">+60%</span>
-        </div>
-        <div class="hist-log-item hist-drop">
-          <span class="hist-log-date">May 15</span>
-          <span class="hist-log-prov">xAI Grok</span>
-          <span class="hist-log-model">Mid (4.x→4.3)</span>
-          <span class="hist-log-change" style="white-space:nowrap">$3.00→$1.25 in · $15→$2.50 out</span>
-          <span class="hist-log-badge drop">−83%</span>
-        </div>
-        <div class="hist-log-note">Updated nightly · May 19, 2026 · Bilton Projects</div>
+        <div class="hist-log-note">Updated nightly · May 23, 2026 · Bilton Projects</div>
       </div>
 
       <!-- Per-provider history bars — two data points -->
@@ -9851,11 +10283,11 @@ function getProviderSignupLink(providerName) {
 const REGISTRY = {
   gemini: {
     name: 'Google Gemini', color: '#1a73e8', cat: 'proprietary',
-    docsUrl: 'https://ai.google.dev/gemini-api/docs/pricing', verified: '2026-05-22',
+    docsUrl: 'https://ai.google.dev/gemini-api/docs/pricing', verified: '2026-05-23',
     history: {
-      lite: [{ date:'2026-05-14', i:0.10, o:0.40 }, { date:'2026-05-15', i:0.25, o:1.00 }, { date:'2026-05-19', i:0.10, o:0.40 }, { date:'2026-05-20', i:0.10, o:0.40 }, { date:'2026-05-21', i:0.10, o:0.40 }, { date:'2026-05-22', i:0.1, o:0.4  }],
-      mid:  [{ date:'2026-05-14', i:0.30, o:2.50 }, { date:'2026-05-15', i:0.30, o:2.50 }, { date:'2026-05-19', i:0.30, o:2.50 }, { date:'2026-05-20', i:1.50, o:9.00 }, { date:'2026-05-21', i:1.50, o:9.00 }, { date:'2026-05-22', i:1.5, o:9.0  }],
-      pro:  [{ date:'2026-05-14', i:1.25, o:10.00 }, { date:'2026-05-15', i:2.00, o:12.00 }, { date:'2026-05-19', i:1.25, o:10.00 }, { date:'2026-05-20', i:1.25, o:10.00 }, { date:'2026-05-21', i:1.25, o:10.00 }, { date:'2026-05-22', i:1.25, o:10.0  }],
+      lite: [{ date:'2026-05-14', i:0.10, o:0.40 }, { date:'2026-05-15', i:0.25, o:1.00 }, { date:'2026-05-19', i:0.10, o:0.40 }, { date:'2026-05-20', i:0.10, o:0.40 }, { date:'2026-05-21', i:0.10, o:0.40 }, { date:'2026-05-22', i:0.1, o:0.4  }, { date:'2026-05-23', i:0.10, o:0.40 }],
+      mid:  [{ date:'2026-05-14', i:0.30, o:2.50 }, { date:'2026-05-15', i:0.30, o:2.50 }, { date:'2026-05-19', i:0.30, o:2.50 }, { date:'2026-05-20', i:1.50, o:9.00 }, { date:'2026-05-21', i:1.50, o:9.00 }, { date:'2026-05-22', i:1.5, o:9.0  }, { date:'2026-05-23', i:1.50, o:9.00 }],
+      pro:  [{ date:'2026-05-14', i:1.25, o:10.00 }, { date:'2026-05-15', i:2.00, o:12.00 }, { date:'2026-05-19', i:1.25, o:10.00 }, { date:'2026-05-20', i:1.25, o:10.00 }, { date:'2026-05-21', i:1.25, o:10.00 }, { date:'2026-05-22', i:1.25, o:10.0  }, { date:'2026-05-23', i:1.25, o:10.00 }],
     },
     models: {
       haiku:  { label:'Flash-Lite 2.5', i:0.10, o:0.40,  maxT:1000000, ctxLabel:'1M',   cliff:null },
@@ -9865,11 +10297,11 @@ const REGISTRY = {
   },
   openai: {
     name: 'OpenAI', color: '#10a37f', cat: 'proprietary',
-    docsUrl: 'https://openai.com/api/pricing', verified: '2026-05-22',
+    docsUrl: 'https://openai.com/api/pricing', verified: '2026-05-23',
     history: {
-      lite: [{ date:'2026-05-12', i:0.15,  o:0.60  }, { date:'2026-05-15', i:0.75, o:4.50 }, { date:'2026-05-19', i:0.75, o:4.50 }, { date:'2026-05-20', i:0.75, o:4.50 }, { date:'2026-05-21', i:0.75, o:4.50 }, { date:'2026-05-22', i:0.15, o:0.6  }],
-      mid:  [{ date:'pre-2026',   i:5.00,  o:20.00 }, { date:'2026-05-12', i:2.50, o:10.00 }, { date:'2026-05-15', i:2.50, o:15.00 }, { date:'2026-05-19', i:2.50, o:15.00 }, { date:'2026-05-20', i:2.50, o:15.00 }, { date:'2026-05-21', i:2.50, o:15.00 }, { date:'2026-05-22', i:2.5, o:10.0  }],
-      pro:  [{ date:'pre-2026',   i:10.00, o:40.00 }, { date:'2026-05-12', i:2.00, o:8.00  }, { date:'2026-05-15', i:5.00, o:30.00 }, { date:'2026-05-19', i:5.00, o:30.00 }, { date:'2026-05-20', i:5.00, o:30.00 }, { date:'2026-05-21', i:5.00, o:30.00 }, { date:'2026-05-22', i:5.0, o:15.0  }],
+      lite: [{ date:'2026-05-12', i:0.15,  o:0.60  }, { date:'2026-05-15', i:0.75, o:4.50 }, { date:'2026-05-19', i:0.75, o:4.50 }, { date:'2026-05-20', i:0.75, o:4.50 }, { date:'2026-05-21', i:0.75, o:4.50 }, { date:'2026-05-22', i:0.15, o:0.6  }, { date:'2026-05-23', i:0.75, o:4.50 }],
+      mid:  [{ date:'pre-2026',   i:5.00,  o:20.00 }, { date:'2026-05-12', i:2.50, o:10.00 }, { date:'2026-05-15', i:2.50, o:15.00 }, { date:'2026-05-19', i:2.50, o:15.00 }, { date:'2026-05-20', i:2.50, o:15.00 }, { date:'2026-05-21', i:2.50, o:15.00 }, { date:'2026-05-22', i:2.5, o:10.0  }, { date:'2026-05-23', i:2.50, o:15.00 }],
+      pro:  [{ date:'pre-2026',   i:10.00, o:40.00 }, { date:'2026-05-12', i:2.00, o:8.00  }, { date:'2026-05-15', i:5.00, o:30.00 }, { date:'2026-05-19', i:5.00, o:30.00 }, { date:'2026-05-20', i:5.00, o:30.00 }, { date:'2026-05-21', i:5.00, o:30.00 }, { date:'2026-05-22', i:5.0, o:15.0  }, { date:'2026-05-23', i:5.00, o:30.00 }],
     },
     models: {
       haiku:  { label:'GPT-5.4 mini', i:0.75,  o:4.50,  maxT:128000,  ctxLabel:'128K', cliff:null },
@@ -9886,11 +10318,11 @@ const REGISTRY = {
   },
   anthropic: {
     name: 'Anthropic', color: '#cc785c', cat: 'proprietary',
-    docsUrl: 'https://www.anthropic.com/pricing', verified: '2026-05-22',
+    docsUrl: 'https://www.anthropic.com/pricing', verified: '2026-05-23',
     history: {
-      lite: [{ date:'2026-05-14', i:1.00, o:5.00  }, { date:'2026-05-15', i:1.00, o:5.00  }, { date:'2026-05-19', i:1.00, o:5.00 }, { date:'2026-05-20', i:1.00, o:5.00 }, { date:'2026-05-21', i:1.00, o:5.00 }, { date:'2026-05-22', i:0.8, o:4.0  }],
-      mid:  [{ date:'pre-2026',   i:8.00, o:24.00 }, { date:'2026-05-14', i:3.00, o:15.00 }, { date:'2026-05-15', i:3.00, o:15.00 }, { date:'2026-05-19', i:3.00, o:15.00 }, { date:'2026-05-20', i:3.00, o:15.00 }, { date:'2026-05-21', i:3.00, o:15.00 }, { date:'2026-05-22', i:3.0, o:15.0  }],
-      pro:  [{ date:'pre-2026',   i:15.00, o:75.00 }, { date:'2026-05-15', i:5.00, o:25.00 }, { date:'2026-05-19', i:5.00, o:25.00 }, { date:'2026-05-20', i:5.00, o:25.00 }, { date:'2026-05-21', i:5.00, o:25.00 }, { date:'2026-05-22', i:15.0, o:75.0  }],
+      lite: [{ date:'2026-05-14', i:1.00, o:5.00  }, { date:'2026-05-15', i:1.00, o:5.00  }, { date:'2026-05-19', i:1.00, o:5.00 }, { date:'2026-05-20', i:1.00, o:5.00 }, { date:'2026-05-21', i:1.00, o:5.00 }, { date:'2026-05-22', i:0.8, o:4.0  }, { date:'2026-05-23', i:1.00, o:5.00 }],
+      mid:  [{ date:'pre-2026',   i:8.00, o:24.00 }, { date:'2026-05-14', i:3.00, o:15.00 }, { date:'2026-05-15', i:3.00, o:15.00 }, { date:'2026-05-19', i:3.00, o:15.00 }, { date:'2026-05-20', i:3.00, o:15.00 }, { date:'2026-05-21', i:3.00, o:15.00 }, { date:'2026-05-22', i:3.0, o:15.0  }, { date:'2026-05-23', i:3.00, o:15.00 }],
+      pro:  [{ date:'pre-2026',   i:15.00, o:75.00 }, { date:'2026-05-15', i:5.00, o:25.00 }, { date:'2026-05-19', i:5.00, o:25.00 }, { date:'2026-05-20', i:5.00, o:25.00 }, { date:'2026-05-21', i:5.00, o:25.00 }, { date:'2026-05-22', i:15.0, o:75.0  }, { date:'2026-05-23', i:5.00, o:25.00 }],
     },
     models: {
       haiku:  { label:'Claude Haiku 4.5',  i:1.00, o:5.00,  maxT:200000, ctxLabel:'200K', cliff:null },
@@ -9900,11 +10332,11 @@ const REGISTRY = {
   },
   deepseek: {
     name: 'DeepSeek', color: '#7c3aed', cat: 'proprietary',
-    docsUrl: 'https://api-docs.deepseek.com/quick_start/pricing', verified: '2026-05-22',
+    docsUrl: 'https://api-docs.deepseek.com/quick_start/pricing', verified: '2026-05-23',
     history: {
-      lite: [{ date:'2026-05-12', i:0.14, o:0.55 }, { date:'2026-05-15', i:0.14, o:0.28 }, { date:'2026-05-19', i:0.14, o:0.28 }, { date:'2026-05-20', i:0.14, o:0.28 }, { date:'2026-05-21', i:0.14, o:0.28 }, { date:'2026-05-22', i:0.14, o:0.28  }],
-      mid:  [{ date:'2026-05-12', i:0.27, o:1.10 }, { date:'2026-05-15', i:0.14, o:0.28 }, { date:'2026-05-19', i:1.74, o:3.48 }, { date:'2026-05-20', i:1.74, o:3.48 }, { date:'2026-05-21', i:1.74, o:3.48 }, { date:'2026-05-22', i:0.87, o:1.74  }],
-      pro:  [{ date:'2026-05-12', i:0.55, o:2.19 }, { date:'2026-05-15', i:1.74, o:3.48 }, { date:'2026-05-19', i:1.74, o:3.48 }, { date:'2026-05-20', i:1.74, o:3.48 }, { date:'2026-05-21', i:1.74, o:3.48 }, { date:'2026-05-22', i:2.19, o:8.75  }],
+      lite: [{ date:'2026-05-12', i:0.14, o:0.55 }, { date:'2026-05-15', i:0.14, o:0.28 }, { date:'2026-05-19', i:0.14, o:0.28 }, { date:'2026-05-20', i:0.14, o:0.28 }, { date:'2026-05-21', i:0.14, o:0.28 }, { date:'2026-05-22', i:0.14, o:0.28  }, { date:'2026-05-23', i:0.14, o:0.28 }],
+      mid:  [{ date:'2026-05-12', i:0.27, o:1.10 }, { date:'2026-05-15', i:0.14, o:0.28 }, { date:'2026-05-19', i:1.74, o:3.48 }, { date:'2026-05-20', i:1.74, o:3.48 }, { date:'2026-05-21', i:1.74, o:3.48 }, { date:'2026-05-22', i:0.87, o:1.74  }, { date:'2026-05-23', i:1.74, o:3.48 }],
+      pro:  [{ date:'2026-05-12', i:0.55, o:2.19 }, { date:'2026-05-15', i:1.74, o:3.48 }, { date:'2026-05-19', i:1.74, o:3.48 }, { date:'2026-05-20', i:1.74, o:3.48 }, { date:'2026-05-21', i:1.74, o:3.48 }, { date:'2026-05-22', i:2.19, o:8.75  }, { date:'2026-05-23', i:1.74, o:3.48 }],
     },
     models: {
       haiku:  { label:'V4 Flash',  i:0.14, o:0.28, maxT:1000000, ctxLabel:'1M', cliff:null },
@@ -9914,11 +10346,11 @@ const REGISTRY = {
   },
   mistral: {
     name: 'Mistral AI', color: '#e11d48', cat: 'proprietary',
-    docsUrl: 'https://mistral.ai/technology/#pricing', verified: '2026-05-22',
+    docsUrl: 'https://mistral.ai/technology/#pricing', verified: '2026-05-23',
     history: {
-      lite: [{ date:'2026-05', i:0.10, o:0.30 }, { date:'2026-05-19', i:0.10, o:0.30 }, { date:'2026-05-20', i:0.10, o:0.30 }, { date:'2026-05-21', i:0.10, o:0.30 }, { date:'2026-05-22', i:0.1, o:0.3  }],
-      mid:  [{ date:'2026-05', i:0.40, o:1.20 }, { date:'2026-05-19', i:0.40, o:1.20 }, { date:'2026-05-20', i:0.40, o:2.00 }, { date:'2026-05-21', i:0.40, o:2.00 }, { date:'2026-05-22', i:0.4, o:2.0  }],
-      pro:  [{ date:'2026-05', i:2.00, o:6.00 }, { date:'2026-05-19', i:2.00, o:6.00 }, { date:'2026-05-20', i:2.00, o:6.00 }, { date:'2026-05-21', i:2.00, o:6.00 }, { date:'2026-05-22', i:2.0, o:6.0  }],
+      lite: [{ date:'2026-05', i:0.10, o:0.30 }, { date:'2026-05-19', i:0.10, o:0.30 }, { date:'2026-05-20', i:0.10, o:0.30 }, { date:'2026-05-21', i:0.10, o:0.30 }, { date:'2026-05-22', i:0.1, o:0.3  }, { date:'2026-05-23', i:0.10, o:0.30 }],
+      mid:  [{ date:'2026-05', i:0.40, o:1.20 }, { date:'2026-05-19', i:0.40, o:1.20 }, { date:'2026-05-20', i:0.40, o:2.00 }, { date:'2026-05-21', i:0.40, o:2.00 }, { date:'2026-05-22', i:0.4, o:2.0  }, { date:'2026-05-23', i:0.40, o:2.00 }],
+      pro:  [{ date:'2026-05', i:2.00, o:6.00 }, { date:'2026-05-19', i:2.00, o:6.00 }, { date:'2026-05-20', i:2.00, o:6.00 }, { date:'2026-05-21', i:2.00, o:6.00 }, { date:'2026-05-22', i:2.0, o:6.0  }, { date:'2026-05-23', i:2.00, o:6.00 }],
     },
     models: {
       haiku:  { label:'Mistral Small',  i:0.10, o:0.30, maxT:32000,  ctxLabel:'32K',  cliff:null },
@@ -9928,11 +10360,11 @@ const REGISTRY = {
   },
   cohere: {
     name: 'Cohere', color: '#0891b2', cat: 'proprietary',
-    docsUrl: 'https://cohere.com/pricing', verified: '2026-05-22',
+    docsUrl: 'https://cohere.com/pricing', verified: '2026-05-23',
     history: {
-      lite: [{ date:'2026-05', i:0.0375, o:0.15  }, { date:'2026-05-19', i:0.0375, o:0.15 }, { date:'2026-05-20', i:0.0375, o:0.15 }, { date:'2026-05-21', i:0.0375, o:0.15 }, { date:'2026-05-22', i:0.1, o:0.2  }],
-      mid:  [{ date:'2026-05', i:0.15,   o:0.60  }, { date:'2026-05-19', i:0.15, o:0.60 }, { date:'2026-05-20', i:0.15, o:0.60 }, { date:'2026-05-21', i:0.15, o:0.60 }, { date:'2026-05-22', i:0.15, o:0.6  }],
-      pro:  [{ date:'2026-05', i:2.50,   o:10.00 }, { date:'2026-05-19', i:2.50, o:10.00 }, { date:'2026-05-20', i:2.50, o:10.00 }, { date:'2026-05-21', i:2.50, o:10.00 }, { date:'2026-05-22', i:0.3, o:1.2  }],
+      lite: [{ date:'2026-05', i:0.0375, o:0.15  }, { date:'2026-05-19', i:0.0375, o:0.15 }, { date:'2026-05-20', i:0.0375, o:0.15 }, { date:'2026-05-21', i:0.0375, o:0.15 }, { date:'2026-05-22', i:0.1, o:0.2  }, { date:'2026-05-23', i:0.0375, o:0.15 }],
+      mid:  [{ date:'2026-05', i:0.15,   o:0.60  }, { date:'2026-05-19', i:0.15, o:0.60 }, { date:'2026-05-20', i:0.15, o:0.60 }, { date:'2026-05-21', i:0.15, o:0.60 }, { date:'2026-05-22', i:0.15, o:0.6  }, { date:'2026-05-23', i:0.15, o:0.60 }],
+      pro:  [{ date:'2026-05', i:2.50,   o:10.00 }, { date:'2026-05-19', i:2.50, o:10.00 }, { date:'2026-05-20', i:2.50, o:10.00 }, { date:'2026-05-21', i:2.50, o:10.00 }, { date:'2026-05-22', i:0.3, o:1.2  }, { date:'2026-05-23', i:2.50, o:10.00 }],
     },
     models: {
       haiku:  { label:'Command R7B',  i:0.0375, o:0.15, maxT:128000, ctxLabel:'128K', cliff:null },
@@ -9942,11 +10374,11 @@ const REGISTRY = {
   },
   groq: {
     name: 'Groq', color: '#ea580c', cat: 'open-hosted',
-    docsUrl: 'https://groq.com/pricing', verified: '2026-05-22',
+    docsUrl: 'https://groq.com/pricing', verified: '2026-05-23',
     history: {
-      lite: [{ date:'2026-05', i:0.05, o:0.08 }, { date:'2026-05-19', i:0.05, o:0.08 }, { date:'2026-05-20', i:0.05, o:0.08 }, { date:'2026-05-21', i:0.05, o:0.08 }, { date:'2026-05-22', i:0.05, o:0.1  }],
-      mid:  [{ date:'2026-05', i:0.59, o:0.79 }, { date:'2026-05-19', i:0.59, o:0.79 }, { date:'2026-05-20', i:0.59, o:0.79 }, { date:'2026-05-21', i:0.59, o:0.79 }, { date:'2026-05-22', i:0.59, o:0.79  }],
-      pro:  [{ date:'2026-05', i:0.75, o:0.99 }, { date:'2026-05-19', i:0.75, o:0.99 }, { date:'2026-05-20', i:0.75, o:0.99 }, { date:'2026-05-21', i:0.75, o:0.99 }, { date:'2026-05-22', i:0.9, o:0.9  }],
+      lite: [{ date:'2026-05', i:0.05, o:0.08 }, { date:'2026-05-19', i:0.05, o:0.08 }, { date:'2026-05-20', i:0.05, o:0.08 }, { date:'2026-05-21', i:0.05, o:0.08 }, { date:'2026-05-22', i:0.05, o:0.1  }, { date:'2026-05-23', i:0.05, o:0.08 }],
+      mid:  [{ date:'2026-05', i:0.59, o:0.79 }, { date:'2026-05-19', i:0.59, o:0.79 }, { date:'2026-05-20', i:0.59, o:0.79 }, { date:'2026-05-21', i:0.59, o:0.79 }, { date:'2026-05-22', i:0.59, o:0.79  }, { date:'2026-05-23', i:0.59, o:0.79 }],
+      pro:  [{ date:'2026-05', i:0.75, o:0.99 }, { date:'2026-05-19', i:0.75, o:0.99 }, { date:'2026-05-20', i:0.75, o:0.99 }, { date:'2026-05-21', i:0.75, o:0.99 }, { date:'2026-05-22', i:0.9, o:0.9  }, { date:'2026-05-23', i:0.75, o:0.99 }],
     },
     models: {
       haiku:  { label:'Llama 3.1 8B',  i:0.05, o:0.08, maxT:128000, ctxLabel:'128K', cliff:null },
@@ -9956,11 +10388,11 @@ const REGISTRY = {
   },
   together: {
     name: 'Together AI', color: '#65a30d', cat: 'open-hosted',
-    docsUrl: 'https://together.ai/pricing', verified: '2026-05-22',
+    docsUrl: 'https://together.ai/pricing', verified: '2026-05-23',
     history: {
-      lite: [{ date:'2026-05', i:0.06, o:0.06 }, { date:'2026-05-19', i:0.06, o:0.06 }, { date:'2026-05-20', i:0.06, o:0.06 }, { date:'2026-05-21', i:0.06, o:0.06 }, { date:'2026-05-22', i:0.1, o:0.1  }],
-      mid:  [{ date:'2026-05', i:0.88, o:0.88 }, { date:'2026-05-19', i:0.88, o:0.88 }, { date:'2026-05-20', i:0.88, o:0.88 }, { date:'2026-05-21', i:0.88, o:0.88 }, { date:'2026-05-22', i:0.44, o:0.88  }],
-      pro:  [{ date:'2026-05', i:3.50, o:3.50 }, { date:'2026-05-19', i:3.50, o:3.50 }, { date:'2026-05-20', i:3.50, o:3.50 }, { date:'2026-05-21', i:3.50, o:3.50 }, { date:'2026-05-22', i:1.2, o:1.2  }],
+      lite: [{ date:'2026-05', i:0.06, o:0.06 }, { date:'2026-05-19', i:0.06, o:0.06 }, { date:'2026-05-20', i:0.06, o:0.06 }, { date:'2026-05-21', i:0.06, o:0.06 }, { date:'2026-05-22', i:0.1, o:0.1  }, { date:'2026-05-23', i:0.06, o:0.06 }],
+      mid:  [{ date:'2026-05', i:0.88, o:0.88 }, { date:'2026-05-19', i:0.88, o:0.88 }, { date:'2026-05-20', i:0.88, o:0.88 }, { date:'2026-05-21', i:0.88, o:0.88 }, { date:'2026-05-22', i:0.44, o:0.88  }, { date:'2026-05-23', i:0.88, o:0.88 }],
+      pro:  [{ date:'2026-05', i:3.50, o:3.50 }, { date:'2026-05-19', i:3.50, o:3.50 }, { date:'2026-05-20', i:3.50, o:3.50 }, { date:'2026-05-21', i:3.50, o:3.50 }, { date:'2026-05-22', i:1.2, o:1.2  }, { date:'2026-05-23', i:3.50, o:3.50 }],
     },
     models: {
       haiku:  { label:'Llama 3.2 3B',   i:0.06, o:0.06, maxT:131000, ctxLabel:'131K', cliff:null },
@@ -9970,11 +10402,11 @@ const REGISTRY = {
   },
   perplexity: {
     name: 'Perplexity', color: '#8b5cf6', cat: 'proprietary',
-    docsUrl: 'https://docs.perplexity.ai/docs/pricing', verified: '2026-05-22',
+    docsUrl: 'https://docs.perplexity.ai/docs/pricing', verified: '2026-05-23',
     history: {
-      lite: [{ date:'2026-05', i:1.00, o:1.00  }, { date:'2026-05-19', i:1.00, o:1.00 }, { date:'2026-05-20', i:1.00, o:1.00 }, { date:'2026-05-21', i:1.00, o:1.00 }, { date:'2026-05-22', i:0.2, o:0.2  }],
-      mid:  [{ date:'2026-05', i:1.00, o:5.00  }, { date:'2026-05-19', i:1.00, o:5.00 }, { date:'2026-05-20', i:2.00, o:8.00 }, { date:'2026-05-21', i:2.00, o:8.00 }, { date:'2026-05-22', i:2.0, o:8.0  }],
-      pro:  [{ date:'2026-05', i:3.00, o:15.00 }, { date:'2026-05-19', i:3.00, o:15.00 }, { date:'2026-05-20', i:3.00, o:15.00 }, { date:'2026-05-21', i:3.00, o:15.00 }, { date:'2026-05-22', i:2.0, o:8.0  }],
+      lite: [{ date:'2026-05', i:1.00, o:1.00  }, { date:'2026-05-19', i:1.00, o:1.00 }, { date:'2026-05-20', i:1.00, o:1.00 }, { date:'2026-05-21', i:1.00, o:1.00 }, { date:'2026-05-22', i:0.2, o:0.2  }, { date:'2026-05-23', i:1.00, o:1.00 }],
+      mid:  [{ date:'2026-05', i:1.00, o:5.00  }, { date:'2026-05-19', i:1.00, o:5.00 }, { date:'2026-05-20', i:2.00, o:8.00 }, { date:'2026-05-21', i:2.00, o:8.00 }, { date:'2026-05-22', i:2.0, o:8.0  }, { date:'2026-05-23', i:2.00, o:8.00 }],
+      pro:  [{ date:'2026-05', i:3.00, o:15.00 }, { date:'2026-05-19', i:3.00, o:15.00 }, { date:'2026-05-20', i:3.00, o:15.00 }, { date:'2026-05-21', i:3.00, o:15.00 }, { date:'2026-05-22', i:2.0, o:8.0  }, { date:'2026-05-23', i:3.00, o:15.00 }],
     },
     models: {
       haiku:  { label:'Sonar',                i:1.00, o:1.00, maxT:127000, ctxLabel:'127K', cliff:null },
@@ -9984,11 +10416,11 @@ const REGISTRY = {
   },
   aws_bedrock: {
     name: 'AWS Bedrock', color: '#f59e0b', cat: 'proprietary',
-    docsUrl: 'https://aws.amazon.com/bedrock/pricing', verified: '2026-05-22',
+    docsUrl: 'https://aws.amazon.com/bedrock/pricing', verified: '2026-05-23',
     history: {
-      lite: [{ date:'2026-05', i:0.80, o:4.00  }, { date:'2026-05-19', i:0.80, o:4.00 }, { date:'2026-05-20', i:0.80, o:4.00 }, { date:'2026-05-21', i:0.80, o:4.00 }, { date:'2026-05-22', i:0.25, o:1.25  }],
-      mid:  [{ date:'pre-2026', i:8.00, o:24.00 }, { date:'2026-05', i:3.00, o:15.00 }, { date:'2026-05-19', i:3.00, o:15.00 }, { date:'2026-05-20', i:3.00, o:15.00 }, { date:'2026-05-21', i:3.00, o:15.00 }, { date:'2026-05-22', i:3.0, o:15.0  }],
-      pro:  [{ date:'2026-05', i:5.32, o:16.00 }, { date:'2026-05-19', i:5.32, o:16.00 }, { date:'2026-05-20', i:5.32, o:16.00 }, { date:'2026-05-21', i:5.32, o:16.00 }, { date:'2026-05-22', i:15.0, o:75.0  }],
+      lite: [{ date:'2026-05', i:0.80, o:4.00  }, { date:'2026-05-19', i:0.80, o:4.00 }, { date:'2026-05-20', i:0.80, o:4.00 }, { date:'2026-05-21', i:0.80, o:4.00 }, { date:'2026-05-22', i:0.25, o:1.25  }, { date:'2026-05-23', i:0.80, o:4.00 }],
+      mid:  [{ date:'pre-2026', i:8.00, o:24.00 }, { date:'2026-05', i:3.00, o:15.00 }, { date:'2026-05-19', i:3.00, o:15.00 }, { date:'2026-05-20', i:3.00, o:15.00 }, { date:'2026-05-21', i:3.00, o:15.00 }, { date:'2026-05-22', i:3.0, o:15.0  }, { date:'2026-05-23', i:3.00, o:15.00 }],
+      pro:  [{ date:'2026-05', i:5.32, o:16.00 }, { date:'2026-05-19', i:5.32, o:16.00 }, { date:'2026-05-20', i:5.32, o:16.00 }, { date:'2026-05-21', i:5.32, o:16.00 }, { date:'2026-05-22', i:15.0, o:75.0  }, { date:'2026-05-23', i:5.32, o:16.00 }],
     },
     models: {
       haiku:  { label:'Claude Haiku (Bedrock)',  i:0.80, o:4.00, maxT:200000, ctxLabel:'200K', cliff:null },
@@ -9998,11 +10430,11 @@ const REGISTRY = {
   },
   deepinfra: {
     name: 'DeepInfra', color: '#0369a1', cat: 'open-hosted',
-    docsUrl: 'https://deepinfra.com/pricing', verified: '2026-05-22',
+    docsUrl: 'https://deepinfra.com/pricing', verified: '2026-05-23',
     history: {
-      lite: [{ date:'2026-05', i:0.055, o:0.055 }, { date:'2026-05-19', i:0.02, o:0.05 }, { date:'2026-05-20', i:0.02, o:0.05 }, { date:'2026-05-21', i:0.02, o:0.05 }, { date:'2026-05-22', i:0.05, o:0.1  }],
-      mid:  [{ date:'2026-05', i:0.23,  o:0.40  }, { date:'2026-05-19', i:0.10, o:0.32 }, { date:'2026-05-20', i:0.10, o:0.32 }, { date:'2026-05-21', i:0.10, o:0.32 }, { date:'2026-05-22', i:0.1, o:0.32  }],
-      pro:  [{ date:'2026-05', i:0.80,  o:0.80  }, { date:'2026-05-19', i:0.80, o:0.80 }, { date:'2026-05-20', i:0.80, o:0.80 }, { date:'2026-05-21', i:0.80, o:0.80 }, { date:'2026-05-22', i:0.4, o:0.4  }],
+      lite: [{ date:'2026-05', i:0.055, o:0.055 }, { date:'2026-05-19', i:0.02, o:0.05 }, { date:'2026-05-20', i:0.02, o:0.05 }, { date:'2026-05-21', i:0.02, o:0.05 }, { date:'2026-05-22', i:0.05, o:0.1  }, { date:'2026-05-23', i:0.02, o:0.05 }],
+      mid:  [{ date:'2026-05', i:0.23,  o:0.40  }, { date:'2026-05-19', i:0.10, o:0.32 }, { date:'2026-05-20', i:0.10, o:0.32 }, { date:'2026-05-21', i:0.10, o:0.32 }, { date:'2026-05-22', i:0.1, o:0.32  }, { date:'2026-05-23', i:0.10, o:0.32 }],
+      pro:  [{ date:'2026-05', i:0.80,  o:0.80  }, { date:'2026-05-19', i:0.80, o:0.80 }, { date:'2026-05-20', i:0.80, o:0.80 }, { date:'2026-05-21', i:0.80, o:0.80 }, { date:'2026-05-22', i:0.4, o:0.4  }, { date:'2026-05-23', i:0.80, o:0.80 }],
     },
     models: {
       haiku:  { label:'Llama 3.1 8B',   i:0.02,  o:0.05,  maxT:128000, ctxLabel:'128K', cliff:null },
@@ -10012,11 +10444,11 @@ const REGISTRY = {
   },
   fireworks: {
     name: 'Fireworks AI', color: '#dc2626', cat: 'open-hosted',
-    docsUrl: 'https://fireworks.ai/pricing', verified: '2026-05-22',
+    docsUrl: 'https://fireworks.ai/pricing', verified: '2026-05-23',
     history: {
-      lite: [{ date:'2026-05', i:0.20, o:0.20 }, { date:'2026-05-19', i:0.20, o:0.20 }, { date:'2026-05-20', i:0.20, o:0.20 }, { date:'2026-05-21', i:0.20, o:0.20 }, { date:'2026-05-22', i:0.1, o:0.3  }],
-      mid:  [{ date:'2026-05', i:0.90, o:0.90 }, { date:'2026-05-19', i:0.90, o:0.90 }, { date:'2026-05-20', i:0.90, o:0.90 }, { date:'2026-05-21', i:0.90, o:0.90 }, { date:'2026-05-22', i:0.45, o:0.9  }],
-      pro:  [{ date:'2026-05', i:3.00, o:3.00 }, { date:'2026-05-19', i:3.00, o:3.00 }, { date:'2026-05-20', i:3.00, o:3.00 }, { date:'2026-05-21', i:3.00, o:3.00 }, { date:'2026-05-22', i:0.9, o:0.9  }],
+      lite: [{ date:'2026-05', i:0.20, o:0.20 }, { date:'2026-05-19', i:0.20, o:0.20 }, { date:'2026-05-20', i:0.20, o:0.20 }, { date:'2026-05-21', i:0.20, o:0.20 }, { date:'2026-05-22', i:0.1, o:0.3  }, { date:'2026-05-23', i:0.20, o:0.20 }],
+      mid:  [{ date:'2026-05', i:0.90, o:0.90 }, { date:'2026-05-19', i:0.90, o:0.90 }, { date:'2026-05-20', i:0.90, o:0.90 }, { date:'2026-05-21', i:0.90, o:0.90 }, { date:'2026-05-22', i:0.45, o:0.9  }, { date:'2026-05-23', i:0.90, o:0.90 }],
+      pro:  [{ date:'2026-05', i:3.00, o:3.00 }, { date:'2026-05-19', i:3.00, o:3.00 }, { date:'2026-05-20', i:3.00, o:3.00 }, { date:'2026-05-21', i:3.00, o:3.00 }, { date:'2026-05-22', i:0.9, o:0.9  }, { date:'2026-05-23', i:3.00, o:3.00 }],
     },
     models: {
       haiku:  { label:'Llama 3.1 8B',   i:0.20, o:0.20, maxT:128000, ctxLabel:'128K', cliff:null },
@@ -10026,11 +10458,11 @@ const REGISTRY = {
   },
   cerebras: {
     name: 'Cerebras', color: '#0d9488', cat: 'open-hosted',
-    docsUrl: 'https://cerebras.ai/pricing', verified: '2026-05-22',
+    docsUrl: 'https://cerebras.ai/pricing', verified: '2026-05-23',
     history: {
-      lite: [{ date:'2026-05', i:0.10, o:0.10 }, { date:'2026-05-19', i:0.10, o:0.10 }, { date:'2026-05-20', i:0.10, o:0.10 }, { date:'2026-05-21', i:0.10, o:0.10 }, { date:'2026-05-22', i:0.1, o:0.1  }],
-      mid:  [{ date:'2026-05', i:0.85, o:1.20 }, { date:'2026-05-19', i:0.85, o:1.20 }, { date:'2026-05-20', i:0.85, o:1.20 }, { date:'2026-05-21', i:0.85, o:1.20 }, { date:'2026-05-22', i:0.4, o:0.85  }],
-      pro:  [{ date:'2026-05', i:0.69, o:0.69 }, { date:'2026-05-19', i:0.69, o:0.69 }, { date:'2026-05-20', i:0.69, o:0.69 }, { date:'2026-05-21', i:0.69, o:0.69 }, { date:'2026-05-22', i:0.6, o:1.2  }],
+      lite: [{ date:'2026-05', i:0.10, o:0.10 }, { date:'2026-05-19', i:0.10, o:0.10 }, { date:'2026-05-20', i:0.10, o:0.10 }, { date:'2026-05-21', i:0.10, o:0.10 }, { date:'2026-05-22', i:0.1, o:0.1  }, { date:'2026-05-23', i:0.10, o:0.10 }],
+      mid:  [{ date:'2026-05', i:0.85, o:1.20 }, { date:'2026-05-19', i:0.85, o:1.20 }, { date:'2026-05-20', i:0.85, o:1.20 }, { date:'2026-05-21', i:0.85, o:1.20 }, { date:'2026-05-22', i:0.4, o:0.85  }, { date:'2026-05-23', i:0.85, o:1.20 }],
+      pro:  [{ date:'2026-05', i:0.69, o:0.69 }, { date:'2026-05-19', i:0.69, o:0.69 }, { date:'2026-05-20', i:0.69, o:0.69 }, { date:'2026-05-21', i:0.69, o:0.69 }, { date:'2026-05-22', i:0.6, o:1.2  }, { date:'2026-05-23', i:0.69, o:0.69 }],
     },
     models: {
       haiku:  { label:'Llama 3.1 8B',  i:0.10, o:0.10, maxT:128000, ctxLabel:'128K', cliff:null },
@@ -10040,11 +10472,11 @@ const REGISTRY = {
   },
   sambanova: {
     name: 'SambaNova', color: '#9333ea', cat: 'open-hosted',
-    docsUrl: 'https://sambanova.ai/apis', verified: '2026-05-22',
+    docsUrl: 'https://sambanova.ai/apis', verified: '2026-05-23',
     history: {
-      lite: [{ date:'2026-05', i:0.10, o:0.20  }, { date:'2026-05-19', i:0.10, o:0.20 }, { date:'2026-05-20', i:0.10, o:0.20 }, { date:'2026-05-21', i:0.10, o:0.20 }, { date:'2026-05-22', i:0.1, o:0.2  }],
-      mid:  [{ date:'2026-05', i:0.60, o:1.20  }, { date:'2026-05-19', i:0.60, o:1.20 }, { date:'2026-05-20', i:0.60, o:1.20 }, { date:'2026-05-21', i:0.60, o:1.20 }, { date:'2026-05-22', i:0.3, o:0.6  }],
-      pro:  [{ date:'2026-05', i:5.00, o:10.00 }, { date:'2026-05-19', i:5.00, o:10.00 }, { date:'2026-05-20', i:5.00, o:10.00 }, { date:'2026-05-21', i:5.00, o:10.00 }, { date:'2026-05-22', i:0.6, o:1.2  }],
+      lite: [{ date:'2026-05', i:0.10, o:0.20  }, { date:'2026-05-19', i:0.10, o:0.20 }, { date:'2026-05-20', i:0.10, o:0.20 }, { date:'2026-05-21', i:0.10, o:0.20 }, { date:'2026-05-22', i:0.1, o:0.2  }, { date:'2026-05-23', i:0.10, o:0.20 }],
+      mid:  [{ date:'2026-05', i:0.60, o:1.20  }, { date:'2026-05-19', i:0.60, o:1.20 }, { date:'2026-05-20', i:0.60, o:1.20 }, { date:'2026-05-21', i:0.60, o:1.20 }, { date:'2026-05-22', i:0.3, o:0.6  }, { date:'2026-05-23', i:0.60, o:1.20 }],
+      pro:  [{ date:'2026-05', i:5.00, o:10.00 }, { date:'2026-05-19', i:5.00, o:10.00 }, { date:'2026-05-20', i:5.00, o:10.00 }, { date:'2026-05-21', i:5.00, o:10.00 }, { date:'2026-05-22', i:0.6, o:1.2  }, { date:'2026-05-23', i:5.00, o:10.00 }],
     },
     models: {
       haiku:  { label:'Llama 3.1 8B',   i:0.10, o:0.20, maxT:128000, ctxLabel:'128K', cliff:null },
@@ -10054,11 +10486,11 @@ const REGISTRY = {
   },
   openrouter: {
     name: 'OpenRouter', color: '#374151', cat: 'open-hosted',
-    docsUrl: 'https://openrouter.ai/models', verified: '2026-05-22',
+    docsUrl: 'https://openrouter.ai/models', verified: '2026-05-23',
     history: {
-      lite: [{ date:'2026-05', i:0.12, o:0.40 }, { date:'2026-05-19', i:0.12, o:0.40 }, { date:'2026-05-20', i:0.12, o:0.40 }, { date:'2026-05-21', i:0.12, o:0.40 }, { date:'2026-05-22', i:0.07, o:0.14  }],
-      mid:  [{ date:'2026-05', i:0.14, o:0.28 }, { date:'2026-05-19', i:0.14, o:0.28 }, { date:'2026-05-20', i:0.14, o:0.28 }, { date:'2026-05-21', i:0.14, o:0.28 }, { date:'2026-05-22', i:0.14, o:0.28  }],
-      pro:  [{ date:'2026-05', i:0.50, o:2.18 }, { date:'2026-05-19', i:0.50, o:2.18 }, { date:'2026-05-20', i:0.50, o:2.18 }, { date:'2026-05-21', i:0.50, o:2.18 }, { date:'2026-05-22', i:0.5, o:1.5  }],
+      lite: [{ date:'2026-05', i:0.12, o:0.40 }, { date:'2026-05-19', i:0.12, o:0.40 }, { date:'2026-05-20', i:0.12, o:0.40 }, { date:'2026-05-21', i:0.12, o:0.40 }, { date:'2026-05-22', i:0.07, o:0.14  }, { date:'2026-05-23', i:0.12, o:0.40 }],
+      mid:  [{ date:'2026-05', i:0.14, o:0.28 }, { date:'2026-05-19', i:0.14, o:0.28 }, { date:'2026-05-20', i:0.14, o:0.28 }, { date:'2026-05-21', i:0.14, o:0.28 }, { date:'2026-05-22', i:0.14, o:0.28  }, { date:'2026-05-23', i:0.14, o:0.28 }],
+      pro:  [{ date:'2026-05', i:0.50, o:2.18 }, { date:'2026-05-19', i:0.50, o:2.18 }, { date:'2026-05-20', i:0.50, o:2.18 }, { date:'2026-05-21', i:0.50, o:2.18 }, { date:'2026-05-22', i:0.5, o:1.5  }, { date:'2026-05-23', i:0.50, o:2.18 }],
     },
     models: {
       haiku:  { label:'Llama 3.3 70B',  i:0.12, o:0.40, maxT:128000, ctxLabel:'128K', cliff:null },
@@ -10068,11 +10500,11 @@ const REGISTRY = {
   },
   xai: {
     name: 'xAI Grok', color: '#1a1a2e', cat: 'proprietary',
-    docsUrl: 'https://docs.x.ai/docs/models', verified: '2026-05-22',
+    docsUrl: 'https://docs.x.ai/docs/models', verified: '2026-05-23',
     history: {
-      lite: [{ date:'2026-05-12', i:0.30, o:0.50 }, { date:'2026-05-15', i:0.20, o:0.50 }, { date:'2026-05-19', i:0.20, o:0.50 }, { date:'2026-05-20', i:0.20, o:0.50 }, { date:'2026-05-21', i:0.20, o:0.50 }, { date:'2026-05-22', i:0.3, o:0.5  }],
-      mid:  [{ date:'2026-05-12', i:3.00, o:15.0 }, { date:'2026-05-15', i:1.25, o:2.50 }, { date:'2026-05-19', i:1.25, o:2.50 }, { date:'2026-05-20', i:1.25, o:2.50 }, { date:'2026-05-21', i:1.25, o:2.50 }, { date:'2026-05-22', i:1.25, o:2.5  }],
-      pro:  [{ date:'2026-05-12', i:3.00, o:15.0 }, { date:'2026-05-15', i:2.00, o:6.00 }, { date:'2026-05-19', i:2.00, o:6.00 }, { date:'2026-05-20', i:2.00, o:6.00 }, { date:'2026-05-21', i:2.00, o:6.00 }, { date:'2026-05-22', i:3.0, o:15.0  }],
+      lite: [{ date:'2026-05-12', i:0.30, o:0.50 }, { date:'2026-05-15', i:0.20, o:0.50 }, { date:'2026-05-19', i:0.20, o:0.50 }, { date:'2026-05-20', i:0.20, o:0.50 }, { date:'2026-05-21', i:0.20, o:0.50 }, { date:'2026-05-22', i:0.3, o:0.5  }, { date:'2026-05-23', i:0.20, o:0.50 }],
+      mid:  [{ date:'2026-05-12', i:3.00, o:15.0 }, { date:'2026-05-15', i:1.25, o:2.50 }, { date:'2026-05-19', i:1.25, o:2.50 }, { date:'2026-05-20', i:1.25, o:2.50 }, { date:'2026-05-21', i:1.25, o:2.50 }, { date:'2026-05-22', i:1.25, o:2.5  }, { date:'2026-05-23', i:1.25, o:2.50 }],
+      pro:  [{ date:'2026-05-12', i:3.00, o:15.0 }, { date:'2026-05-15', i:2.00, o:6.00 }, { date:'2026-05-19', i:2.00, o:6.00 }, { date:'2026-05-20', i:2.00, o:6.00 }, { date:'2026-05-21', i:2.00, o:6.00 }, { date:'2026-05-22', i:3.0, o:15.0  }, { date:'2026-05-23', i:2.00, o:6.00 }],
     },
     models: {
       haiku:  { label:'Grok 4.1 Fast', i:0.20, o:0.50, maxT:2000000, ctxLabel:'2M', cliff:null },
@@ -11105,9 +11537,14 @@ function _dashboardReady() {
     if (window._urlExp) {
       setTimeout(() => { if (amDetailCollapsed) toggleAmDetail(); }, 160);
     }
-    // Restore background theme
+    // Restore background theme — URL param takes priority, then localStorage
     if (window._urlBg) {
       setTimeout(() => { if (window.setBg) window.setBg(window._urlBg); }, 180);
+    } else {
+      const _savedBg = localStorage.getItem('ts-bg');
+      if (_savedBg && ['charcoal','midnight','pitch'].includes(_savedBg)) {
+        setTimeout(() => { if (window.setBg) window.setBg(_savedBg); }, 180);
+      }
     }
     // Restore palette mood
     if (window._urlMood) {
@@ -11979,6 +12416,8 @@ const ARTICLES = [
     body:`<h2>Context windows explained</h2><p>The context window is the maximum text a model can hold in memory at once — your prompt, conversation history, any documents, and the model's response combined.</p><table><thead><tr><th>Model</th><th>Context</th><th>~Words</th></tr></thead><tbody><tr><td>GPT-5.4 mini</td><td>128K</td><td>~96K</td></tr><tr><td>Claude Sonnet 4.6</td><td>200K</td><td>~150K</td></tr><tr><td>Grok 4.1 Fast</td><td>2M</td><td>~1.5M</td></tr><tr><td>Gemini Flash 2.5</td><td>1M</td><td>~750K</td></tr></tbody></table><h3>Bigger isn't always better</h3><p>Research shows AI models struggle to reliably use information in the middle of very long contexts. For most tasks, 128K is more than sufficient.</p><div class="callout">💡 The "lost in the middle" problem: if you need the model to reliably reference a specific fact buried in a 500K token document, performance may be worse than with a shorter, focused prompt.</div>` },
   { id:'batch-cache', tag:'Pricing', icon:'⚡', title:'Batch API & caching — cut costs 50–90%', preview:'Two features that can dramatically reduce your bill if you know how to use them.',
     body:`<h2>Batch API & prompt caching</h2><h3>Batch API (50% off)</h3><p>Submit thousands of requests in a single file. The provider processes them asynchronously and you collect results when done — typically within a few hours.</p><p><strong>When to use it:</strong> Processing datasets, generating descriptions, analysing documents offline, anything where real-time response isn't needed.</p><div class="callout">💡 1,000 summaries at GPT-5.4 standard rates: $2.50. Via batch API: $1.25. At scale, this adds up fast.</div><h3>Prompt caching (90% off cached input)</h3><p>If your requests share a large common prefix — a system prompt, reference document, instructions — the provider caches it after the first request. Subsequent requests pay 90% less on those cached tokens.</p><p><strong>When to use it:</strong> Customer service bots with a large knowledge base. Apps querying the same document repeatedly. Any app with a fixed large system prompt.</p>` },
+  { id:'energy-lens', tag:'Sustainability', icon:'&#x26A1;', title:'The energy behind a query', preview:'Input and output tokens have different energy costs. How MoE models change the picture, why carbon varies by provider, and what scale really means.',
+    body:`<h2>&#x26A1; The energy behind a query</h2><p style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#15803d;margin-top:-0.5rem;margin-bottom:1rem;">The Kettle Index</p><div class="callout" style="border-left-color:#15803d;background:rgba(34,197,94,0.06);color:#15803d;"><strong>How to find it:</strong> Type a word count, then look for the small ⚡ gem that appears at the corner of the stats bar. Tap it once to open. Tap <em>Keep energy on</em> and it follows you as you scroll.</div><p>The idea for this feature started in a kitchen, watching an electric kettle boil. That single litre of water &mdash; a 2,000W element for about three minutes &mdash; takes roughly <strong>0.1 kWh</strong>.</p><p>A single AI text query uses somewhere between <strong>0.00004 and 0.009 kWh</strong> depending on model size. You can run <strong>30 to 300 standard queries</strong> for the energy cost of one boil.</p><h3>Input vs output &mdash; why it matters</h3><p>Not all tokens cost the same. Input tokens (your prompt, the conversation history) are processed in parallel &mdash; fast and relatively efficient. Output tokens are generated one at a time in sequence, which is roughly <strong>3&ndash;5&times; more energy-intensive per token</strong> (Luccioni et al. 2023). The estimates here split your token count ~80% input, ~20% output to reflect typical API usage.</p><h3>The 100W bulb &mdash; a trustable unit</h3><p>The 100W incandescent bulb is the most universally understood energy reference. Unlike LED bulbs (4W? 12W? everyone has a different one), the 100W bulb was standardised globally for decades. It is the watt made physical.</p><table><thead><tr><th>Query type</th><th>Energy (mid)</th><th>100W bulb</th></tr></thead><tbody><tr><td>Lite model &mdash; email</td><td>~0.04 mWh</td><td>~1.4 seconds</td></tr><tr><td>Mid model &mdash; article</td><td>~0.3 mWh</td><td>~11 seconds</td></tr><tr><td>Pro model &mdash; novel</td><td>~7 mWh</td><td>~4 minutes</td></tr></tbody></table><h3>MoE models use less</h3><p>Mixture-of-Experts architectures like DeepSeek V3/R1 activate only ~20&ndash;25% of their parameters per token. Energy scales roughly with active compute, so MoE models use approximately <strong>30% of what an equivalent dense model would use</strong> (DeepSeek-V3 technical report, 2024). This is why DeepSeek can charge dramatically less &mdash; the efficiency gains are real.</p><h3>Carbon varies by provider</h3><p>A single global average hides meaningful differences. DeepSeek runs data centres in Inner Mongolia on a grid that is ~580 gCO2/kWh (coal-heavy; IEA 2023 China average). US providers on Google, AWS, or Azure infrastructure sit around 380 gCO2/kWh. The CO2 figures here use provider-specific estimates rather than one global number.</p><h3>Scale is where it gets real</h3><p>One query is negligible. One million queries a day at mid-tier rates uses roughly <strong>300&ndash;500 kWh</strong> &mdash; approaching a typical UK home monthly electricity bill. Every day.</p><div class="callout">Same insight as cost: the per-query number looks tiny. The scale number is what changes behaviour.</div><h3>How the estimates work</h3><p>Energy midpoints are derived from Luccioni et al. (2023) <em>Power Hungry Processing</em>, which measured real inference across model sizes on H100/A100 hardware. Pro-tier figures are scaled from Patterson et al. (2021) and IEA (2024) data-centre efficiency estimates. The range band (0.4&ndash;2.5&times; the midpoint) reflects real-world variation in hardware generation, data-centre PUE (1.1&ndash;1.6), and batch size &mdash; it is an illustrative spread, not a statistical confidence interval.</p><h3>The Kettle Index</h3><p>One kettle boil (0.1 kWh) is the base unit. The <strong>Kettle Index</strong> answers the question: if a million people ran this query every day, how many kettles would that boil? It converts an invisible per-query number into something you can picture — a canteen, a city, a power station. Silicon doing matrix multiplication is extraordinarily efficient at the individual level. The Kettle Index shows where that changes.</p><p><em>Found this by accident? That was intentional. The gem appears quietly after a few seconds of use &mdash; a small reward for curiosity. Turn on Keep energy on and it locks to the topbar so it follows you as you scroll.</em></p>` },
 ];
 
 function openLearnIndex() {
@@ -12007,11 +12446,12 @@ function closeLearnIndex() {
 function buildLearnGrid() {
   const grid=$('learnGrid'); if(!grid||grid.dataset.built) return;
   grid.dataset.built='1';
-  const sections={'Fundamentals':[],'Providers':[],'Pricing':[],'Decisions':[]};
+  const sections={'Fundamentals':[],'Providers':[],'Pricing':[],'Decisions':[],'Sustainability':[]};
   ARTICLES.forEach(a=>{ if(sections[a.tag]) sections[a.tag].push(a); });
   let html='';
   for(const [sec,arts] of Object.entries(sections)) {
     if(!arts.length) continue;
+    if (sec === 'Sustainability' && !localStorage.getItem('ts_energy_found')) continue;
     html+=`<div class="learn-section-head">${sec}</div>`;
     arts.forEach(a=>{
       html+=`<div class="learn-card" onclick="openArticle('${a.id}')">
@@ -12029,12 +12469,50 @@ function buildLearnGrid() {
 }
 
 function openArticle(id) {
-  const art=ARTICLES.find(a=>a.id===id); if(!art) return;
-  const t=$('articleTitle'); if(t) t.textContent=art.title;
-  const b=$('articleBody');  if(b) b.innerHTML=art.body;
-  $('view-article')?.classList.add('open');
+  var art=ARTICLES.find(function(a){return a.id===id;}); if(!art) return;
+  var t=$('articleTitle'); if(t) t.textContent=art.title;
+  var body=art.body;
+  // Energy lens: inject live session callout
+  if(id==='energy-lens'){
+    var convOpen=window._epConvIsOpen&&(window._epConvTotalTokens||0)>0;
+    var tokens=convOpen?window._epConvTotalTokens:(typeof w2t==='function'&&typeof curWords!=='undefined'?w2t(curWords):0);
+    var replies=convOpen?(window._epConvTotalReplies||1):1;
+    var tier=(typeof EP_WH!=='undefined'&&typeof activeModel!=='undefined')?(EP_WH[activeModel]||EP_WH.sonnet):EP_WH.sonnet;
+    var _moe=1.0; if(typeof activeProvider!=='undefined'&&EP_MOE_SLOTS[activeProvider]&&EP_MOE_SLOTS[activeProvider].indexOf(activeModel)!==-1) _moe=EP_MOE_FACTOR;
+    var whMid=(((tokens*0.8)/1000)*tier.i+((tokens*0.2)/1000)*tier.o)*_moe;
+    var whLo=whMid*0.4; var whHi=whMid*2.5;
+    var kettlePct=(whMid/100)*100;
+    if(tokens>0){
+      var sessionDesc=convOpen&&replies>1
+        ?'your current session ('+replies+' replies, '+Math.round(tokens).toLocaleString()+' tokens total)'
+        :'your current query ('+Math.round(tokens).toLocaleString()+' tokens)';
+      var kettleStr=kettlePct<0.1?kettlePct.toFixed(4)+'%':kettlePct<1?kettlePct.toFixed(3)+'%':kettlePct.toFixed(1)+'%';
+      var dailyKettles=Math.round((whMid*1e6)/100);
+      var scaleStr=dailyKettles<1000?dailyKettles.toLocaleString():dailyKettles<1000000?(dailyKettles/1000).toFixed(1)+'K':(dailyKettles/1000000).toFixed(2)+'M';
+      var loStr=typeof epFmtWh==='function'?epFmtWh(whLo):'~';
+      var hiStr=typeof epFmtWh==='function'?epFmtWh(whHi):'~';
+      var callout='<div class="callout" style="border-left-color:#15803d;background:rgba(34,197,94,0.06);color:#15803d;">'
+        +'<strong>Your session right now:</strong> '+sessionDesc
+        +' &mdash; estimated <strong>'+loStr+' &ndash; '+hiStr+'</strong>'
+        +' &mdash; that is <strong>'+kettleStr+' of boiling a kettle</strong>.'
+        +' At 1 million users doing the same: <strong>'+scaleStr+' kettle boils per day</strong>.'
+        +'</div>';
+      body=body.replace('</p><p>A single AI text query',callout+'</p><p>A single AI text query');
+    }
+  }
+  var b=$('articleBody'); if(b) b.innerHTML=body;
+  var av=$('view-article');
+  if(av){ av.scrollTop=0; av.style.zIndex='10001'; av.style.visibility='visible'; av.style.pointerEvents='auto'; av.classList.add('open'); }
+  // Lower view-learn's inline z-index so view-article sits on top.
+  // openLearnIndex sets it to 9999 so it clears the dashboard — we step it down here.
+  var lv=$('view-learn'); if(lv) lv.style.zIndex='9999';
 }
-function closeArticle() { $('view-article')?.classList.remove('open'); }
+function closeArticle() {
+  var av=$('view-article');
+  if(av){ av.classList.remove('open'); av.style.zIndex=''; av.style.visibility=''; av.style.pointerEvents=''; }
+  // Keep view-learn at high z-index so it remains above the dashboard.
+  var lv=$('view-learn'); if(lv) lv.style.zIndex='9999';
+}
 
 function scrollToCompare() {} // no-op, hint is now inside the panel
 
@@ -12082,7 +12560,10 @@ function toggleFullMarket() {
     renderFmNameTable();
     renderFmTable();   // pre-render so Lowest Rate tab is ready on first tap
     renderFmCat();
-    setTimeout(showCompareTooltip, 600);
+    renderPriceTicker();
+    _playFmBanner(fmActiveTab);
+    clearTimeout(window._fmTooltipTimer);
+    window._fmTooltipTimer = setTimeout(showCompareTooltip, 1350);
   }
   pushUrlState();
 }
@@ -12292,6 +12773,55 @@ function wireFmSlider() {
   });
 }
 
+// ── Price moves ticker — auto-computed from history diffs ─────────────────────
+function computePriceMoves(minPct) {
+  minPct = minPct || 3;
+  const TIER_LABEL = { lite:'Silver', mid:'Gold', pro:'Platinum' };
+  const moves = [];
+  Object.entries(FULL_MARKET).forEach(function(entry) {
+    var key  = entry[0];
+    var prov = entry[1];
+    ['lite','mid','pro'].forEach(function(tier) {
+      var hist = prov.history && prov.history[tier];
+      if (!hist || hist.length < 2) return;
+      var prev = hist[hist.length - 2];
+      var curr = hist[hist.length - 1];
+      var prevAvg = (prev.i + prev.o) / 2;
+      var currAvg = (curr.i + curr.o) / 2;
+      if (!prevAvg) return;
+      var pct = Math.round(((currAvg - prevAvg) / prevAvg) * 100);
+      if (Math.abs(pct) < minPct) return;
+      moves.push({
+        key: key, name: prov.name, tier: tier,
+        tierLabel: TIER_LABEL[tier],
+        pct: pct, dir: pct > 0 ? 'rise' : 'drop',
+        date: curr.date
+      });
+    });
+  });
+  return moves.sort(function(a,b){ return Math.abs(b.pct) - Math.abs(a.pct); });
+}
+
+function renderPriceTicker() {
+  var strip = document.getElementById('pmStrip');
+  var track = document.getElementById('pmTrack');
+  if (!strip || !track) return;
+  var moves = computePriceMoves(3);
+  if (!moves.length) { strip.style.display = 'none'; return; }
+  strip.style.display = 'flex';
+  var html = moves.map(function(m) {
+    var arrow = m.dir === 'rise' ? '↑' : '↓';
+    var sign  = m.dir === 'rise' ? '+' : '';
+    var short = m.name.split(' ')[0];
+    return '<span class="pm-item pm-' + m.dir + '">'
+      + arrow + ' <span class="pm-who">' + short + ' ' + m.tierLabel + '</span>&nbsp;' + sign + m.pct + '%'
+      + '</span>';
+  }).join('');
+  track.innerHTML = html + html; // duplicate for seamless marquee loop
+  var speed = Math.max(25, moves.length * 5);
+  track.style.animationDuration = speed + 's';
+}
+
 function switchFmTab(tab, el) {
   fmActiveTab = tab;
   document.querySelectorAll('.fm-tab').forEach(b => b.classList.remove('active'));
@@ -12306,9 +12836,14 @@ function switchFmTab(tab, el) {
   if (tab === 'bycat')    renderFmCat();
   if (tab === 'byname')   renderFmNameTable();
   if (tab === 'cheapest') renderFmTable();
-  // Tooltip only relevant on interactive tabs
+  // Banner animates in; tooltip follows after animation settles
+  _playFmBanner(tab);
   const wrap = $('fmTooltipWrap');
-  if (wrap) wrap.style.display = (tab === 'byname' || tab === 'cheapest') && !fmTooltipSeen ? 'block' : 'none';
+  if (wrap) wrap.style.display = 'none';
+  clearTimeout(window._fmTooltipTimer);
+  if ((tab === 'byname' || tab === 'cheapest') && !fmTooltipSeen) {
+    window._fmTooltipTimer = setTimeout(showCompareTooltip, 1300);
+  }
 }
 
 // ── Quick-nav: jump to a specific fm tab from anywhere ──────────────────────
@@ -12782,6 +13317,7 @@ function dismissSortHint() {
 
 function dismissCompareTooltip() {
   fmTooltipSeen = true;
+  _fmBannerStatic();
   const wrap = $('fmTooltipWrap');
   const tt   = $('fmCompareTooltip');
   if (!tt) return;
@@ -12792,6 +13328,179 @@ function dismissCompareTooltip() {
     wrap && wrap.classList.remove('collapsing');
     tt.classList.remove('fm-ctt-animate','fm-ctt-dismiss-anim');
   }, 380);
+}
+
+// ── FM Section Banner System ──────────────────────────────────────────────
+const _FM_BM = {
+  byname:   { icon:'Aa', label:'By name',      sub:'all 16 providers · A → Z' },
+  cheapest: { icon:'↓',  label:'Lowest rate',  sub:'ranked by total cost' },
+  bycat:    { icon:'📊', label:'By category',  sub:'proprietary · open-source · inference' },
+  chart:    { icon:'📈', label:'Price history', sub:'nightly verified · 16 providers' },
+};
+
+function _playFmBanner(tab) {
+  const banner  = document.getElementById('fmSectionBanner');
+  const svgWrap = document.getElementById('fmBannerSvgWrap');
+  const stHead  = document.getElementById('fmBannerStaticHead');
+  if (!banner || !svgWrap) return;
+  const meta = _FM_BM[tab] || {};
+  if (banner.classList.contains('banner-static')) {
+    // Past "Got it" — just update the small static label
+    if (stHead) stHead.textContent = (meta.icon || '') + '  ' + (meta.label || '').toUpperCase();
+    return;
+  }
+  svgWrap.innerHTML = _fmBSvg(tab); // re-inject restarts all CSS animations
+  // For By Name: flash the real tier pills to draw the eye up toward them
+  if (tab === 'byname') {
+    setTimeout(() => {
+      const pills = document.getElementById('fmNameTierPills');
+      if (pills) {
+        pills.classList.remove('fn-flash');
+        void pills.offsetWidth; // force reflow → restart animation
+        pills.classList.add('fn-flash');
+        setTimeout(() => pills.classList.remove('fn-flash'), 2500);
+      }
+    }, 900);
+  }
+}
+
+function _fmBannerStatic() {
+  const banner  = document.getElementById('fmSectionBanner');
+  const stHead  = document.getElementById('fmBannerStaticHead');
+  const meta    = _FM_BM[fmActiveTab] || {};
+  if (!banner) return;
+  banner.classList.add('banner-static');
+  if (stHead) stHead.textContent = (meta.icon || '') + '  ' + (meta.label || '').toUpperCase();
+}
+
+function _fmBSvg(tab) {
+  return ({ byname:_fmSvgByname, cheapest:_fmSvgCheapest, bycat:_fmSvgBycat, chart:_fmSvgChart }[tab] || (() => ''))();
+}
+
+function _fmSvgByname() {
+  return `<svg viewBox="0 0 300 90" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:auto">
+<defs><style>
+.bng{opacity:0;animation:bnDrp .28s ease both;transform-box:fill-box;transform-origin:50% 100%}
+.bnu{stroke-dasharray:158;stroke-dashoffset:158;animation:bnLn .42s ease .82s both}
+.bns{opacity:0;animation:bnFd .3s ease 1.02s both}
+.bnp{opacity:0;transform-box:fill-box;transform-origin:50% 100%;animation:bnUp .28s ease both}
+@keyframes bnDrp{from{opacity:0;transform:translateY(-11px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bnLn{to{stroke-dashoffset:0}}
+@keyframes bnFd{from{opacity:0}to{opacity:.65}}
+@keyframes bnUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.bn-acc{fill:var(--model-c,#1967d2)}
+.bn-mu{fill:var(--d-text-muted,#8c8882)}
+.bn-us{stroke:var(--model-c,#1967d2);fill:none}
+</style></defs>
+<!-- "Aa BY NAME" centred — Aa≈36px wide, BY NAME≈160px, total≈200px, offset≈50 -->
+<g class="bng" style="animation-delay:.04s"><text x="50"  y="52" font-family="'Clash Display',Inter,sans-serif" font-size="34" font-weight="800" class="bn-mu" opacity=".7">Aa</text></g>
+<g class="bng" style="animation-delay:.12s"><text x="92"  y="52" font-family="'Clash Display',Inter,sans-serif" font-size="34" font-weight="800" class="bn-acc">B</text></g>
+<g class="bng" style="animation-delay:.20s"><text x="114" y="52" font-family="'Clash Display',Inter,sans-serif" font-size="34" font-weight="800" class="bn-acc">Y</text></g>
+<g class="bng" style="animation-delay:.28s"><text x="145" y="52" font-family="'Clash Display',Inter,sans-serif" font-size="34" font-weight="800" class="bn-acc">N</text></g>
+<g class="bng" style="animation-delay:.36s"><text x="169" y="52" font-family="'Clash Display',Inter,sans-serif" font-size="34" font-weight="800" class="bn-acc">A</text></g>
+<g class="bng" style="animation-delay:.44s"><text x="193" y="52" font-family="'Clash Display',Inter,sans-serif" font-size="34" font-weight="800" class="bn-acc">M</text></g>
+<g class="bng" style="animation-delay:.52s"><text x="224" y="52" font-family="'Clash Display',Inter,sans-serif" font-size="34" font-weight="800" class="bn-acc">E</text></g>
+<!-- Underline centred under BY NAME portion -->
+<line x1="92" y1="59" x2="248" y2="59" stroke-width="2.5" stroke-linecap="round" opacity=".3" class="bnu bn-us"/>
+<!-- Subtitle centred -->
+<text x="150" y="71" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="10" fill="currentColor" class="bns">all 16 providers · A → Z</text>
+<!-- Tier pills centred — total pill block ≈ 196px, start at 52 -->
+<g class="bnp" style="animation-delay:1.05s">
+  <rect x="52"  y="77" width="62" height="11" rx="3" fill="var(--tier-s-solid,#B8860B)" opacity=".45"/>
+  <text x="83"  y="86" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="700" fill="#fff">① SILVER</text>
+</g>
+<g class="bnp" style="animation-delay:1.15s">
+  <rect x="119" y="77" width="52" height="11" rx="3" fill="var(--model-c,#1967d2)" opacity=".55"/>
+  <text x="145" y="86" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="700" fill="#fff">② GOLD</text>
+</g>
+<g class="bnp" style="animation-delay:1.25s">
+  <rect x="176" y="77" width="70" height="11" rx="3" fill="var(--tier-o-solid,#7B6FCD)" opacity=".55"/>
+  <text x="211" y="86" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7.5" font-weight="700" fill="#fff">③ PLATINUM</text>
+</g>
+<text x="254" y="86" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="currentColor" opacity="0" style="animation:bnFd .28s ease 1.38s both">↑ above</text>
+</svg>`;
+}
+
+function _fmSvgCheapest() {
+  return `<svg viewBox="0 0 300 94" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:auto">
+<defs><style>
+.cpT{opacity:0;animation:cpDrp .3s ease both;transform-box:fill-box;transform-origin:50% 50%}
+.cpB{opacity:0;transform:scaleY(0);transform-box:fill-box;transform-origin:50% 100%;animation:cpGrw .38s ease both}
+.cpF{opacity:0;animation:cpFd .3s ease both}
+@keyframes cpDrp{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cpGrw{from{opacity:0;transform:scaleY(0)}to{opacity:.85;transform:scaleY(1)}}
+@keyframes cpFd{from{opacity:0}to{opacity:.72}}
+.cp-acc{fill:var(--model-c,#1967d2)}
+.cp-as{stroke:var(--model-c,#1967d2);fill:none}
+</style></defs>
+<!-- LOWEST — stamps in -->
+<g class="cpT" style="animation-delay:.08s"><text x="10" y="46" font-family="'Clash Display',Inter,sans-serif" font-size="40" font-weight="800" class="cp-acc">LOWEST</text></g>
+<!-- RATE — stamps in -->
+<g class="cpT" style="animation-delay:.30s"><text x="10" y="82" font-family="'Clash Display',Inter,sans-serif" font-size="40" font-weight="800" class="cp-acc">RATE</text></g>
+<!-- 4 bars growing from bottom (baseline y=90) -->
+<rect x="188" y="72" width="14" height="18" rx="2" class="cp-acc cpB" style="animation-delay:.42s"/>
+<rect x="207" y="60" width="14" height="30" rx="2" class="cp-acc cpB" style="animation-delay:.54s"/>
+<rect x="226" y="46" width="14" height="44" rx="2" class="cp-acc cpB" style="animation-delay:.66s"/>
+<rect x="245" y="28" width="14" height="62" rx="2" class="cp-acc cpB" style="animation-delay:.78s"/>
+<!-- "ranked by total cost" — stacked small text, far right -->
+<text x="267" y="52" font-family="'JetBrains Mono',monospace" font-size="9" fill="currentColor" class="cpF" style="animation-delay:.90s">ranked</text>
+<text x="267" y="63" font-family="'JetBrains Mono',monospace" font-size="9" fill="currentColor" class="cpF" style="animation-delay:.96s">by total</text>
+<text x="267" y="74" font-family="'JetBrains Mono',monospace" font-size="9" fill="currentColor" class="cpF" style="animation-delay:1.02s">cost</text>
+<!-- ↓ arrow at bottom centre, above the "↓ LOWEST RATE" tab button (2nd of 4 = ~x112) -->
+<g class="cpF" style="animation-delay:1.10s">
+  <line x1="112" y1="86" x2="112" y2="92" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".5"/>
+  <polyline points="108,89 112,93 116,89" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".5"/>
+</g>
+</svg>`;
+}
+
+function _fmSvgBycat() {
+  return `<svg viewBox="0 0 300 82" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:auto">
+<defs><style>
+.bcT{opacity:0;animation:bcDrp .28s ease both;transform-box:fill-box;transform-origin:50% 50%}
+.bcB{opacity:0;transform:scaleY(0);transform-box:fill-box;transform-origin:50% 100%;animation:bcGrw .4s ease both}
+.bcL{opacity:0;animation:bcFd .25s ease both}
+@keyframes bcDrp{from{opacity:0;transform:translateY(-9px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bcGrw{from{opacity:0;transform:scaleY(0)}to{opacity:.85;transform:scaleY(1)}}
+@keyframes bcFd{from{opacity:0}to{opacity:.7}}
+.bc-acc{fill:var(--model-c,#1967d2)}
+</style></defs>
+<g class="bcT" style="animation-delay:.04s"><text x="14" y="20" font-family="'Clash Display',Inter,sans-serif" font-size="21" font-weight="800" class="bc-acc">📊 BY CATEGORY</text></g>
+<!-- Proprietary bar — haiku/silver colour -->
+<rect x="28"  y="28" width="60" height="38" rx="4" fill="var(--haiku-baked,#0d7a6b)" class="bcB" style="animation-delay:.30s"/>
+<!-- Open-source bar — model accent -->
+<rect x="120" y="38" width="60" height="28" rx="4" class="bc-acc bcB" style="animation-delay:.48s"/>
+<!-- Inference bar — opus/platinum colour -->
+<rect x="212" y="50" width="60" height="16" rx="4" fill="var(--tier-o-solid,#7B6FCD)" class="bcB" style="animation-delay:.66s"/>
+<text x="58"  y="76" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" fill="currentColor" class="bcL" style="animation-delay:.90s">PROPRIETARY</text>
+<text x="150" y="76" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" fill="currentColor" class="bcL" style="animation-delay:1.0s">OPEN-SOURCE</text>
+<text x="242" y="76" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="9" fill="currentColor" class="bcL" style="animation-delay:1.1s">INFERENCE</text>
+</svg>`;
+}
+
+function _fmSvgChart() {
+  return `<svg viewBox="0 0 300 78" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:auto">
+<defs><style>
+.chT{opacity:0;animation:chDrp .28s ease both;transform-box:fill-box;transform-origin:50% 50%}
+.chL{stroke-dasharray:310;stroke-dashoffset:310;animation:chDrw .85s ease .12s both}
+.chD{opacity:0;transform:scale(0);transform-box:fill-box;transform-origin:50% 50%;animation:chPop .2s ease both}
+.chF{opacity:0;animation:chFd .3s ease both}
+@keyframes chDrp{from{opacity:0;transform:translateY(-9px)}to{opacity:1;transform:translateY(0)}}
+@keyframes chDrw{to{stroke-dashoffset:0}}
+@keyframes chPop{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+@keyframes chFd{from{opacity:0}to{opacity:.65}}
+.ch-acc{fill:var(--model-c,#1967d2)}
+.ch-as{stroke:var(--model-c,#1967d2);fill:none}
+</style></defs>
+<g class="chT" style="animation-delay:.04s"><text x="14" y="20" font-family="'Clash Display',Inter,sans-serif" font-size="21" font-weight="800" class="ch-acc">📈 PRICE HISTORY</text></g>
+<line x1="14" y1="62" x2="288" y2="62" stroke="currentColor" stroke-width=".8" opacity=".15" class="chF" style="animation-delay:.04s"/>
+<polyline points="14,58 44,48 74,54 104,40 134,34 164,42 194,26 224,30 260,18 288,20"
+  class="ch-as chL" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="134" cy="34" r="3.5" class="ch-acc chD" style="animation-delay:.58s"/>
+<circle cx="194" cy="26" r="3.5" class="ch-acc chD" style="animation-delay:.74s"/>
+<circle cx="260" cy="18" r="3.5" class="ch-acc chD" style="animation-delay:.90s"/>
+<text x="14" y="74" font-family="'JetBrains Mono',monospace" font-size="9.5" fill="currentColor" class="chF" style="animation-delay:1.0s">nightly verified · 16 providers · 3 tiers</text>
+</svg>`;
 }
 
 function fmLongPressStart(e, key) {
@@ -13219,6 +13928,344 @@ function sizeInput() {
   }
 }
 
+
+// == ENERGY GEM ===============================================
+const EP_LS_ON='ts_energy_on', EP_LS_FOUND='ts_energy_found';
+// Per-token energy (Wh per 1K tokens), split input / output.
+// Output decode is ~3-5x more energy-intensive than input prefill
+// because it runs sequentially (Luccioni et al. 2023, Table 2).
+// Baselines from measured H100/A100 inference; pro tier scaled from
+// Patterson et al. 2021 + IEA 2024 data-centre efficiency estimates.
+const EP_WH={
+  haiku:  {i:0.0001, o:0.0004},
+  sonnet: {i:0.0003, o:0.0012},
+  opus:   {i:0.0008, o:0.0035}
+};
+// MoE models activate ~20-25% of params per token; energy scales with
+// active compute, so ~30% of an equivalent dense model.
+// (DeepSeek-V3 technical report 2024, section 3.4)
+const EP_MOE_FACTOR=0.30;
+const EP_MOE_SLOTS={
+  deepseek:   ['haiku','sonnet','opus'],
+  groq:       ['opus'],
+  cerebras:   ['opus'],
+  openrouter: ['sonnet','opus']
+};
+// Illustrative band — NOT a statistical CI. Reflects hardware generation
+// (V100->H100 ~3x gain), PUE 1.1-1.6, and batch-size variation.
+// (IEA 2024 section 3; Luccioni et al. 2023 supplementary)
+const EP_LO=0.4, EP_HI=2.5;
+// Provider-specific carbon intensity gCO2e/kWh (IEA 2023 country averages;
+// provider sustainability reports where available).
+const EP_CO2_BY_PROVIDER={
+  gemini:     350,
+  openai:     380,
+  anthropic:  380,
+  deepseek:   580,
+  mistral:    420,
+  cohere:     380,
+  groq:       380,
+  together:   380,
+  perplexity: 380,
+  aws_bedrock:380,
+  deepinfra:  380,
+  fireworks:  380,
+  cerebras:   380,
+  sambanova:  380,
+  openrouter: 436,
+  xai:        380
+};
+const EP_CO2_DEFAULT=436;
+var epOpen=false, epDetailOpen=false, epCarbon=false, epPersist=false;
+var _gemRevealed=false, _gemTimer=null;
+var _gemInputListenerAttached=false;
+
+function epBoot(){
+  // Don't restore energy state if on landing page — wait for dashboard
+  var landing=document.getElementById('view-landing');
+  if(landing && !landing.classList.contains('hidden') && !landing.classList.contains('exiting')){
+    return;
+  }
+  // Returning user: switch "EXPLORE" → "OPEN" — they already know what it does
+  if(localStorage.getItem(EP_LS_FOUND)==='1'){
+    var _pill=document.getElementById('epExplorePill'); if(_pill) _pill.textContent='open';
+  }
+  epPersist=localStorage.getItem(EP_LS_ON)==='1';
+  if(!epPersist) return;
+  _gemRevealed=true; _gemTimer='done';
+  // #14 — invalidate learn grid so Sustainability appears for returning users
+  var lg=document.getElementById('learnGrid'); if(lg) delete lg.dataset.built;
+  var gem=document.getElementById('energyGem');
+  if(gem){ gem.style.transition='none'; gem.classList.add('gem-visible','gem-on'); requestAnimationFrame(function(){gem.style.transition='';}); }
+  epOpen=true; epDetailOpen=false;
+  var panel=document.getElementById('energyPanel');
+  if(panel) panel.classList.add('ep-open');
+  var pc=document.getElementById('epPersistCheck'); if(pc) pc.checked=true;
+  var pn=document.getElementById('epPersistNote'); if(pn) pn.style.display='block';
+  localStorage.setItem(EP_LS_FOUND,'1');
+  var dash=document.getElementById('view-dashboard');
+  if(dash) dash.addEventListener('scroll',epOnScroll,{passive:true});
+}
+
+function scheduleGemReveal(){
+  if(_gemRevealed||_gemTimer) return;
+  // 1 second delay then animate in with pulse
+  _gemTimer=setTimeout(function(){
+    _gemRevealed=true;
+    localStorage.setItem(EP_LS_FOUND,'1');
+    // Invalidate learn grid so Sustainability section appears
+    var lg=document.getElementById('learnGrid'); if(lg) delete lg.dataset.built;
+    var gem=document.getElementById('energyGem');
+    if(!gem) return;
+    gem.style.pointerEvents=''; // clear any manual override from close
+    gem.style.transition='';    // restore CSS transition
+    gem.classList.add('gem-visible');
+    setTimeout(function(){gem.classList.add('gem-pulse');},80);
+    setTimeout(function(){gem.classList.remove('gem-pulse');},1400);
+  },500);
+}
+
+// Attach trigger to word input typing ONLY (not slider)
+var _sliderActive=false;
+
+function _attachSliderSuppressor(){
+  var hs=document.getElementById('heroSlider');
+  if(!hs||hs._sliderSuppressorAttached) return;
+  hs._sliderSuppressorAttached=true;
+  function markSlider(){
+    _sliderActive=true;
+    clearTimeout(window._sliderActiveTimer);
+    window._sliderActiveTimer=setTimeout(function(){_sliderActive=false;},1500);
+  }
+  hs.addEventListener('mousedown',  markSlider);
+  hs.addEventListener('touchstart', markSlider, {passive:true});
+  hs.addEventListener('input',      markSlider);
+}
+
+function attachGemInputTrigger(){
+  _attachSliderSuppressor(); // always attach slider suppressor first
+  var wi=document.getElementById('wordInput');
+  if(!wi||wi._gemTriggerAttached) return;
+  wi._gemTriggerAttached=true;
+  function tryReveal(){
+    if(!wi.value || wi.value.replace(/[^0-9]/g,'').length===0){
+      clearTimeout(_gemTimer); _gemTimer=null; return;
+    }
+    if(!_sliderActive) scheduleGemReveal();
+  }
+  wi.addEventListener('input', tryReveal);
+  wi.addEventListener('blur',  tryReveal);
+  wi.addEventListener('keyup', tryReveal);
+}
+
+// Hide gem on reset — fades out 1s after reset, resets discovery
+function epHideGem(){
+  // If persist is on, keep gem visible (user chose to keep it)
+  if(epPersist) return;
+  setTimeout(function(){
+    // Re-check inside timer — epPersist may have been restored since the call
+    if(epPersist){ epEnsureSlimVisible(); return; }
+    var gem=document.getElementById('energyGem');
+    var panel=document.getElementById('energyPanel');
+    if(gem){
+      gem.classList.remove('gem-pulse'); // #12 clean up pulse
+      gem.style.transition='opacity 0.6s ease, transform 0.5s cubic-bezier(.34,1.56,.64,1)';
+      gem.classList.remove('gem-visible','gem-on');
+    }
+    if(panel) panel.classList.remove('ep-open');
+    epOpen=false; epDetailOpen=false;
+    epCarbon=false; // #4 reset carbon state
+    var co2check=document.getElementById('epCarbonCheck'); if(co2check) co2check.checked=false;
+    var co2cell=document.getElementById('epCarbonCell'); if(co2cell) co2cell.style.display='none';
+    var slim=document.getElementById('epSlim'), detail=document.getElementById('epDetail');
+    if(slim)   slim.classList.remove('ep-expanded');
+    if(detail) detail.classList.remove('ep-detail-open');
+    epUpdateTopbar(false);
+    _gemRevealed=false; _gemTimer=null;
+    // Uncheck persist if localStorage was cleared
+    if(!localStorage.getItem('ts_energy_on')){
+      var pc=document.getElementById('epPersistCheck'); if(pc) pc.checked=false;
+      var pn=document.getElementById('epPersistNote'); if(pn) pn.style.display='none';
+    }
+    var wi=document.getElementById('wordInput');
+    if(wi) wi._gemTriggerAttached=false;
+    setTimeout(attachGemInputTrigger,200);
+  },1000);
+}
+
+// When persist is on, keep slim row visible even when panel is "closed"
+function epEnsureSlimVisible(){
+  if(!epPersist) return;
+  var panel=document.getElementById('energyPanel');
+  var gem=document.getElementById('energyGem');
+  if(!epOpen){
+    epOpen=true;
+    if(panel) panel.classList.add('ep-open');
+    if(gem)   gem.classList.add('gem-on');
+    updateEnergyPanel();
+  }
+}
+
+function _epAttachScroll(){
+  var dash=document.getElementById('view-dashboard');
+  if(dash&&!dash._epScrollAttached){ dash._epScrollAttached=true; dash.addEventListener('scroll',epOnScroll,{passive:true}); }
+}
+
+function toggleEnergyPanel(){
+  // Three-state cycle: closed → slim → full → closed
+  var panel=document.getElementById('energyPanel'), gem=document.getElementById('energyGem');
+  var slim=document.getElementById('epSlim'), detail=document.getElementById('epDetail');
+  // Switch "EXPLORE" → "OPEN" on first tap — they now know what it does
+  var _pill=document.getElementById('epExplorePill');
+  if(_pill && _pill.textContent.trim()==='explore') _pill.textContent='open';
+  localStorage.setItem(EP_LS_FOUND,'1');
+  _epAttachScroll();
+
+  if(!epOpen){
+    // State 1: closed → open slim
+    epOpen=true; epDetailOpen=false;
+    if(panel) panel.classList.add('ep-open');
+    if(gem)   gem.classList.add('gem-on');
+    if(slim)  slim.classList.remove('ep-expanded');
+    if(detail) detail.classList.remove('ep-detail-open');
+    updateEnergyPanel();
+  } else if(!epDetailOpen){
+    // State 2: slim → expand full
+    epDetailOpen=true;
+    if(slim)   slim.classList.add('ep-expanded');
+    if(detail) detail.classList.add('ep-detail-open');
+  } else {
+    // State 3: full → collapse to slim (or close if not persistent)
+    epDetailOpen=false;
+    if(slim)   slim.classList.remove('ep-expanded');
+    if(detail) detail.classList.remove('ep-detail-open');
+    if(epPersist){
+      // Persist on: stay slim, keep gem lit, keep topbar
+      var h=document.getElementById('heroStats');
+      epUpdateTopbar(h?h.getBoundingClientRect().bottom<0:false);
+    } else {
+      // Persist off: close panel, dim gem — but keep it visible until words cleared
+      epOpen=false;
+      if(panel) panel.classList.remove('ep-open');
+      if(gem) gem.classList.remove('gem-on'); // dim but stay visible
+      epUpdateTopbar(false);
+    }
+  }
+}
+
+function toggleEpDetail(){
+  // Slim-row tap — delegates to gem toggle so state stays in sync
+  toggleEnergyPanel();
+}
+
+function toggleEpCarbon(on){ epCarbon=on; var cell=document.getElementById('epCarbonCell'); if(cell) cell.style.display=on?'block':'none'; updateEnergyPanel(); }
+
+function toggleEpPersist(on){
+  epPersist=on;
+  on?localStorage.setItem(EP_LS_ON,'1'):localStorage.removeItem(EP_LS_ON);
+  var note=document.getElementById('epPersistNote'); if(note) note.style.display=on?'block':'none';
+  if(on){
+    epEnsureSlimVisible();
+    _epAttachScroll();
+    var h=document.getElementById('heroStats');
+    epUpdateTopbar(h?h.getBoundingClientRect().bottom<0:false);
+  } else {
+    epUpdateTopbar(false);
+  }
+}
+
+function epUpdateTopbar(show){
+  var row=document.getElementById('topbarEpRow'); if(!row) return;
+  if(show&&epPersist&&epOpen){
+    row.classList.add('tep-visible');
+    var tbVal=document.getElementById('topbarEpVal'), tbCmp=document.getElementById('topbarEpCompare');
+    var srcCmp=document.getElementById('epCompare'), ctxNote=document.getElementById('epContextNote');
+    var srcValText=document.getElementById('epValText');
+    // Lead with comparison, Wh after
+    var cmpText=srcCmp?srcCmp.textContent:'';
+    var ctxText=ctxNote&&ctxNote.style.display!=='none'?' · '+ctxNote.textContent:'';
+    if(tbVal) tbVal.textContent=cmpText+ctxText;
+    if(tbCmp) tbCmp.textContent=srcValText?srcValText.textContent:'';
+  } else { row.classList.remove('tep-visible'); }
+}
+
+function epFmtWh(wh){
+  if(wh===0) return '0';
+  if(wh<0.001) return (wh*1e6).toFixed(1)+'µWh';
+  if(wh<1)     return (wh*1000).toFixed(2)+' mWh';
+  return wh.toFixed(3)+' Wh';
+}
+
+function epCompareStr(wh){
+  var bulbSec=(wh/0.1)*3600;
+  if(bulbSec<0.3)   return 'less than a camera flash';
+  if(bulbSec<60)    return '≈ '+bulbSec.toFixed(0)+'s of a 100W bulb';
+  if(bulbSec<3600)  return '≈ '+(bulbSec/60).toFixed(1)+' min of a 100W bulb';
+  if(bulbSec<86400) return '≈ '+(bulbSec/3600).toFixed(1)+'h of a 100W bulb';
+  var pct=(wh/100)*100;
+  if(pct<1) return '≈ '+pct.toFixed(2)+'% of boiling a kettle';
+  return '≈ '+pct.toFixed(1)+'% of boiling a kettle';
+}
+
+// Short value-only version for use in brackets — no "≈" or unit label
+function epCompareShort(wh){
+  var bulbSec=(wh/0.1)*3600;
+  if(bulbSec<0.3)   return '< 0.3s';
+  if(bulbSec<60)    return bulbSec.toFixed(0)+'s';
+  if(bulbSec<3600)  return (bulbSec/60).toFixed(1)+' min';
+  if(bulbSec<86400) return (bulbSec/3600).toFixed(1)+'h';
+  var pct=(wh/100)*100;
+  return (pct<1?pct.toFixed(2):pct.toFixed(1))+'% kettle';
+}
+
+function updateEnergyPanel(){
+  if(!epOpen) return;
+  var valEl=document.getElementById('epValText'), cmpEl=document.getElementById('epCompare');
+  var co2El=document.getElementById('epCarbonVal'), ctxEl=document.getElementById('epContextNote');
+  var effEl=document.getElementById('epSideEff'), scaleEl=document.getElementById('epSideScale');
+  if(!valEl) return;
+  var w=(typeof curWords!=='undefined')?curWords:0;
+  if(w===0){
+    valEl.textContent='— set a word count above';
+    if(cmpEl) cmpEl.textContent=''; if(co2El) co2El.textContent='—';
+    if(ctxEl) ctxEl.style.display='none';
+    if(effEl) effEl.textContent='—'; if(scaleEl) scaleEl.textContent='—';
+    epUpdateTopbar(false); return;
+  }
+  var convOpen=window._epConvIsOpen&&(window._epConvTotalTokens||0)>0;
+  var tokens=convOpen?window._epConvTotalTokens:w2t(w);
+  var replies=convOpen?(window._epConvTotalReplies||1):1;
+  var tierRates=EP_WH[activeModel]||EP_WH.sonnet;
+  var moeFactor=1.0;
+  if(typeof activeProvider!=='undefined'&&EP_MOE_SLOTS[activeProvider]&&EP_MOE_SLOTS[activeProvider].indexOf(activeModel)!==-1) moeFactor=EP_MOE_FACTOR;
+  var tokIn=tokens*0.80, tokOut=tokens*0.20;
+  var whMid=((tokIn/1000)*tierRates.i+(tokOut/1000)*tierRates.o)*moeFactor;
+  var whLo=whMid*EP_LO, whHi=whMid*EP_HI;
+  valEl.textContent=epFmtWh(whLo)+' – '+epFmtWh(whHi);
+  var _cmpStr=epCompareStr(whMid);
+  if(convOpen&&replies>1) _cmpStr+=' ('+epCompareShort(whMid/replies)+' × 1 query)';
+  if(cmpEl) cmpEl.textContent=_cmpStr;
+  if(ctxEl){ if(convOpen&&replies>1){ var whPerReply=whMid/replies; ctxEl.textContent='×'+replies+' replies · '+epFmtWh(whPerReply)+'/reply · context re-read included'; } else { ctxEl.textContent='single query · no context re-read'; } ctxEl.style.display='block'; }
+  // Both sides
+  var kettlePct=(whMid/100)*100;
+  if(effEl){ var ks=kettlePct<0.01?kettlePct.toFixed(4)+'%':kettlePct<1?kettlePct.toFixed(3)+'%':kettlePct.toFixed(1)+'%'; effEl.textContent=ks+' of boiling a kettle — silicon is remarkably efficient'; }
+  if(scaleEl){ var dk=Math.round((whMid*1e6)/100); var ss=dk<1?'< 1':dk<1000?dk.toLocaleString():dk<1000000?(dk/1000).toFixed(1)+'K':(dk/1000000).toFixed(2)+'M'; scaleEl.textContent=ss+' kettle boils/day at 1M daily users'; }
+  if(co2El&&epCarbon){ var co2PerKwh=(typeof activeProvider!=='undefined'&&EP_CO2_BY_PROVIDER[activeProvider])||EP_CO2_DEFAULT; var lo=(whLo/1000)*co2PerKwh, hi=(whHi/1000)*co2PerKwh; var hiStr=hi<0.0001?'< 0.0001':hi.toFixed(4); co2El.textContent=lo<0.0001?'< 0.0001 \u2013 '+hiStr:lo.toFixed(4)+' \u2013 '+hiStr; }
+  var heroStats=document.getElementById('heroStats');
+  var heroGone=heroStats?heroStats.getBoundingClientRect().bottom<0:false;
+  epUpdateTopbar(heroGone);
+}
+
+function epOnScroll(){
+  if(!epPersist){ epUpdateTopbar(false); return; }
+  var h=document.getElementById('heroStats');
+  var gone=h?h.getBoundingClientRect().bottom<0:false;
+  // Ensure slim is open when persistent
+  if(epPersist && !epOpen && typeof curWords!=='undefined' && curWords>0) epEnsureSlimVisible();
+  epUpdateTopbar(gone);
+}
+
+// ============================================================
 function update() {
   sizeInput();
   updateHeroProviderLabel();
@@ -13536,6 +14583,28 @@ function update() {
   updateExpandChips();
   // Always keep conv graph in sync with master word count / model / pricing mode
   redrawConvIfOpen();
+  // Energy gem — reveal only from typing, never from slider
+  if(!_gemRevealed && !_gemTimer && !_sliderActive && typeof curWords!=='undefined' && curWords>0){
+    var wi=document.getElementById('wordInput');
+    if(wi && wi.value && wi.value.replace(/[^0-9]/g,'').length>0){
+      scheduleGemReveal();
+    }
+  }
+  // When words hit zero, animate gem away
+  if(_gemRevealed && typeof curWords!=='undefined' && curWords===0){
+    var _savedP=epPersist; epPersist=false;
+    if(typeof epHideGem==='function') epHideGem();
+    epPersist=_savedP;
+  }
+  updateEnergyPanel();
+  // Re-check topbar after paint — getBoundingClientRect during lmTap runs before
+  // any scroll animation, so heroGone can be stale. A rAF pass catches it correctly.
+  if(epPersist && epOpen) requestAnimationFrame(function(){
+    var h=document.getElementById('heroStats');
+    epUpdateTopbar(h?h.getBoundingClientRect().bottom<0:false);
+  });
+  // Persistent slim bar — keep visible whenever epPersist is on
+  if(epPersist && typeof curWords!=='undefined' && curWords>0) epEnsureSlimVisible();
   // Keep URL in sync with current state
   pushUrlState();
 }
@@ -13718,6 +14787,11 @@ function resetAll() {
   curWords = 0;
   selectedBtn = null;
   $('wordInput').value = '';
+  // Clear all energy state on reset — localStorage + runtime
+  localStorage.removeItem('ts_energy_on');
+  localStorage.removeItem('ts_energy_found');
+  epPersist=false;
+  if(typeof epHideGem==='function') epHideGem();
   allBtns().forEach(b => b.classList.remove('selected', 'near', 'exact'));
   selectModel('sonnet');
   setPricingMode('standard');
@@ -14221,6 +15295,9 @@ function toggleConv() {
   const body = $('convBody');
   const btn  = document.querySelector('.conv-header');
   const open = $('convBody').classList.toggle('open');
+  window._epConvIsOpen=open;
+  if(!open){window._epConvTotalTokens=0;window._epConvTotalReplies=0;}
+  if(typeof updateEnergyPanel==='function') updateEnergyPanel();
   btn.classList.toggle('open', open);
   if (open) {
     // Pre-paint slider tracks immediately so the gradient is baked in
@@ -14509,6 +15586,12 @@ function drawConv() {
   // Max cost for bar scaling
   const maxCost = allReplies[allReplies.length - 1].total;
   const maxCum  = allReplies[allReplies.length - 1].cumTotal;
+  // Export conv totals for energy panel
+  var _epTok=0; allReplies.forEach(function(r){_epTok+=r.ctx+r.replyT;});
+  window._epConvTotalTokens=_epTok;
+  window._epConvTotalReplies=totalReplies;
+  window._epConvIsOpen=$('convBody')?$('convBody').classList.contains('open'):false;
+  if(typeof updateEnergyPanel==='function') updateEnergyPanel();
 
   // ── STACK VISUALISER ──
   const stack = $('convStack');
@@ -15934,9 +17017,11 @@ function updateLegendHex() {
     const html = document.documentElement;
     if (id === 'light') {
       html.removeAttribute('data-bg');
+      localStorage.removeItem('ts-bg');
       if (collapseReason === 'auto') collapseReason = null;
     } else {
       html.setAttribute('data-bg', id);
+      localStorage.setItem('ts-bg', id);
       collapseReason = 'auto';
     }
     ['light','charcoal','midnight','pitch'].forEach(b => {
@@ -16014,11 +17099,14 @@ function updateLegendHex() {
     closePdLegend();
   };
 
-  // Close on outside tap
+  // Close on outside tap — check both dashboard and landing palette buttons
   document.addEventListener('click', function(e) {
     const dd  = document.getElementById('paletteDropdown');
     const btn = document.getElementById('paletteBtn');
-    if (dd.classList.contains('open') && !dd.contains(e.target) && !btn.contains(e.target)) {
+    const lbtn = document.getElementById('landingPaletteBtn');
+    if (dd.classList.contains('open') && !dd.contains(e.target)
+        && !(btn && btn.contains(e.target))
+        && !(lbtn && lbtn.contains(e.target))) {
       closePaletteDropdown();
     }
   });
@@ -16072,7 +17160,7 @@ function updateLegendHex() {
 <!-- Article detail panel (slides over learn index) -->
 <div class="view" id="view-article">
   <div class="learn-topbar">
-    <button class="learn-back" onclick="closeArticle()" title="All topics">←</button>
+    <button class="learn-back" onclick="closeArticle()" title="Back to all topics" style="font-size:.55rem;width:auto;padding:0 .5rem;border-radius:12px;">‹ All</button>
     <div class="learn-title" id="articleTitle">Article</div>
     <div></div>
   </div>
@@ -16777,7 +17865,7 @@ function reportFromAllModels(modelLabel, rateIn, rateOut) {
         <div class="hmc-options">
           <button class="hmc-option" data-q="1" data-v="global" onclick="hmcPickSingle(this,1)">
             <span class="hmc-option-icon">🌍</span>
-            <div class="hmc-option-body"><div class="hmc-option-label">Anywhere / No preference</div><div class="hmc-option-sub">No specific regional requirements — show me the best overall — show me the best overall</div></div>
+            <div class="hmc-option-body"><div class="hmc-option-label">Anywhere / No preference</div><div class="hmc-option-sub">No specific regional requirements — show me the best overall</div></div>
           </button>
           <button class="hmc-option" data-q="1" data-v="us" onclick="hmcPickSingle(this,1)">
             <span class="hmc-option-icon">🇺🇸</span>
@@ -17531,6 +18619,19 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') closeDataLog();
 });
 
+// ── REVIEWS STRIP DISMISS ──
+function dismissStrip() {
+  const strip = document.getElementById('reviewsStrip');
+  if (strip) {
+    strip.style.transition = 'opacity 0.2s ease, max-height 0.3s ease, padding 0.3s ease';
+    strip.style.opacity = '0';
+    strip.style.maxHeight = '0';
+    strip.style.padding = '0';
+    strip.style.borderBottom = 'none';
+    setTimeout(() => strip.remove(), 320);
+  }
+}
+
 </script>
 
 
@@ -17593,5 +18694,12 @@ changes detected  : 3
 </div>
 
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"f6b906ce778146bb8d88b0a9ec86e13a","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script>
+document.addEventListener("DOMContentLoaded",epBoot);
+document.addEventListener("DOMContentLoaded",function(){
+  _attachSliderSuppressor(); // suppress slider immediately on load
+  setTimeout(attachGemInputTrigger,300);
+});
+</script>
 </body>
 </html>
